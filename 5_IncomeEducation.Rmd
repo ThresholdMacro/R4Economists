@@ -1,0 +1,146 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+## Download Income by Educational Attainment from FRED and create a set of charts
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
+
+```{r include=FALSE}
+## load up the packages we will need:  (uncomment as required)
+if(!require("pacman")) install.packages("pacman")
+pacman::p_load(tidyverse,
+ggthemes,
+sysfonts,
+showtext,
+alfred,
+fredr,
+stargazer)
+
+source("R/ggstdplots.R")
+
+lngdf <- function(df) {
+longdf <-
+df |>
+tidyr::pivot_longer(c(-Date), names_to = 'key', values_to = 'value')
+return(longdf)
+}
+
+
+ggplotRegression <- function (fit) {
+  
+  ggplot(fit$model, aes(x = fit$model[2], y = fit$model[1])) + 
+    geom_point() +
+    stat_smooth(method = "lm", col = "red") +
+    labs(title = paste("Adj R2 = ",signif(summary(fit1)$adj.r.squared, 5),
+                       "Intercept =",signif(fit$coef[[1]],5 ),
+                       " Slope =",signif(fit$coef[[2]], 5),
+                       " P =",signif(summary(fit)$coef[2,4], 5)))
+}
+
+
+```
+
+### Download the data of income for different levels of educational attainment.
+
+Recursively because that is how FRED R client works. Print a summary of the results.
+
+```{r include=FALSE}
+
+API_key<-'39889bdd8fa77d15b0ae08ab03f7020c'
+fredr_set_key(API_key)
+startdate <- as.Date("2000-01-01")
+
+CodeMap <- data.frame("SeriesID"= c("LEU0252919100Q","LEU0252917300Q",	"LEU0252916700Q"),
+                      "SeriesName" = c("Bachelors degree","High School diploma only", "Less than High School Diploma"))
+
+# fetch the data from FRED
+# first series
+EdAttainIncome <- alfred::get_fred_series(CodeMap[1,1], series_name = CodeMap[1,2], observation_start = startdate)
+
+# then loop for other series, starting with second row
+for(srs in 2:nrow(CodeMap)) {
+  df <-
+    alfred::get_fred_series(CodeMap[srs, 1],
+                            series_name = CodeMap[srs, 2],
+                            observation_start = startdate)
+  EdAttainIncome <- cbind(EdAttainIncome, df[, 2])
+  colnames(EdAttainIncome)[srs + 1] <- CodeMap[srs, 2]
+}
+
+colnames(EdAttainIncome)[1] <- "Date"
+
+
+
+
+# store the data locally
+EdAttainIncome <- readr::write_csv(EdAttainIncome,"Data/IncomeEducationalAttainment.csv")
+```
+
+```{r include=TRUE}
+# look at summary of data
+summary(EdAttainIncome)
+
+
+### Plot the relationship in basic ggplot2 timeseries format.
+
+
+lngEdAttain <- lngdf(EdAttainIncome)
+
+p_EdAttain <- ggplot2::ggplot(lngEdAttain,aes(x=Date,y=value, color=key)) + geom_line()
+p_EdAttain
+```
+
+### Formatting
+
+Now let's make some formatting enhancements using our own customised ggplot functions. Then further customise to a preset theme which is contained in the source files quoted at the top of the script.
+
+```{r}
+p_EdAttain2 <- ggstandard(lngEdAttain,"Educational Attainment & Income","Source:  U.S. Bureau of Labor Statistics, HedgeAnalytics","5 years","US$ weekly")
+p_EdAttain2
+p_EdAttain2 + darktheme + theme(legend.position = 'bottom') + scale_color_HA_qualitative()
+```
+
+### Fit 2 series
+
+Build a linear regression model of 2 series.
+
+```{r}
+fit1 <- lm(`Bachelors degree` ~ `Less than High School Diploma`, data = EdAttainIncome)
+
+summary(fit1)
+
+
+```
+prettify the results
+
+```{r}
+out <- stargazer::stargazer(fit1, type = 'text')
+```
+### Create a plot of of the model results.
+
+Map the coefficients of income of low educational standard against bachelor's degree income.
+
+Note that elements of ggplot can be amended, or added.
+
+```{r}
+p_EdAttainLM <- ggplot(EdAttainIncome, aes(x = `Bachelors degree`, y = `Less than High School Diploma`)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red")
+
+charttitle <- "Mapping Income: Bachelors degree to High School Diploma"
+chartcaption <- "Source: U.S. Bureau of Labor Statistics"
+p_EdAttainLM +  labs(title = charttitle,
+                     caption = chartcaption) 
+
+p_EdAttainLM + labs(title = paste("Adj R2 = ",signif(summary(fit1)$adj.r.squared, 5),
+                     "Intercept =",signif(fit1$coef[[1]],5 ),
+                     " Slope =",signif(fit1$coef[[2]], 5),
+                     " P =",signif(summary(fit1)$coef[2,4], 5)))
+
+```
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.

@@ -1,0 +1,127 @@
+---
+title: "R Notebook for AER examples"
+output: html_notebook
+---
+
+
+## Introduction
+
+This example shows how you can combine R with HTML (or other outputs, such as Word). This is done by embedding R code into a special document known as [R Markdown](http://rmarkdown.rstudio.com) Notebook. This formats text in a simple way, and runs code, presenting the output. The code can be shown, or hidden
+
+This RMarkdown Notebook is being used with AER package of Applied Econometrics, which contains a large number of (old) datasets as well as the functions to perform econometric analysis.
+
+The aim is to kill 2 birds with one stone - hopefully it is not too much to take in. 
+
+Try executing chunks by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+## Using AER package as an example.
+
+“Applied Econometrics with R” (Kleiber and Zeileis 2008, Springer-Verlag, ISBN 978- 0-387-77316-2, pp. vii+222) is the first book on applied econometrics using the R system for statistical computing and graphics (R Core Team 2019). It presents hands-on exam- ples for a wide range of econometric models, from classical linear regression models for cross-section, time series or panel data and the common non-linear models of microecono- metrics, such as logit, probit, tobit models as well as regression models for count data, to recent semiparametric extensions. In addition, it provides a chapter on programming, including simulations, optimization and an introduction to R tools enabling reproducible econometric research. The methods are presented by illustrating, among other things, the fitting of wage equations, growth regressions, dynamic regressions and time series models as well as various models of microeconometrics.
+
+### A panel study on income dynamics 1982
+
+```{r include=FALSE}
+if(!require("pacman")) install.packages("pacman")
+
+pacman::p_load(tidyverse,
+ggthemes,
+sysfonts,
+showtext,
+AER,
+dynlm,
+strucchange)
+```
+
+```{r include=TRUE}
+#########################################
+## Panel study on income dynamics 1982 ##
+#########################################
+## data
+data("PSID1982", package = "AER")
+## Table 4.1
+earn_lm <- lm(log(wage) ~ . + I(experience^2), data = PSID1982)
+summary(earn_lm)
+
+## Table 13.1
+union_lpm <- lm(I(as.numeric(union) - 1) ~ . - wage, data = PSID1982)
+union_probit <- glm(union ~ . - wage, data = PSID1982, family = binomial(link = "probit"))
+union_logit <- glm(union ~ . - wage, data = PSID1982, family = binomial)
+
+```
+
+<!-- ### The following takes the Stock and Watson study of inflation (I believe!). -->
+
+<!-- ```{r include=TRUE} -->
+<!-- ## Stock and Watson (2007) -->
+<!-- data("USMacroSW", package = "AER") -->
+
+<!-- usm <- ts.intersect(USMacroSW, 4 * 100 * diff(log(USMacroSW[, "cpi"]))) -->
+<!-- colnames(usm) <- c(colnames(USMacroSW), "infl") -->
+<!-- ## Equations 14.7, 14.13, 14.16, 14.17, pp. 536 -->
+<!-- fm_ar1 <- dynlm(d(infl) ~ L(d(infl)), -->
+<!--                 data = usm, start = c(1962,1), end = c(2004,4)) -->
+<!-- fm_ar4 <- dynlm(d(infl) ~ L(d(infl), 1:4), -->
+<!--                 data = usm, start = c(1962,1), end = c(2004,4)) -->
+<!-- fm_adl41 <- dynlm(d(infl) ~ L(d(infl), 1:4) + L(unemp), -->
+<!--                   data = usm, start = c(1962,1), end = c(2004,4)) -->
+<!-- fm_adl44 <- dynlm(d(infl) ~ L(d(infl), 1:4) + L(unemp, 1:4), -->
+<!--                   data = usm, start = c(1962,1), end = c(2004,4)) -->
+<!-- coeftest(fm_ar1, vcov = sandwich) -->
+<!-- coeftest(fm_ar4, vcov = sandwich) -->
+<!-- coeftest(fm_adl41, vcov = sandwich) -->
+<!-- coeftest(fm_adl44, vcov = sandwich) -->
+
+<!-- ``` -->
+
+### Further examples, US consumption data (1950-1993) using personal income and expenditure data
+
+```{r echo=TRUE}
+#####################################
+## US consumption data (1950-1993) ##
+#####################################
+## data
+data("USConsump1993", package = "AER")
+plot(USConsump1993, plot.type = "single", col = 1:2)
+## Chapter 5 (p. 122-125)
+```
+
+### Perform the Durbin Watson test for auto-correlation
+
+In a regression model's output. The DW statistic ranges from zero to four, with a value of 2.0 indicating zero autocorrelation. Values below 2.0 mean there is positive autocorrelation and above 2.0 indicates negative autocorrelation. The test reports DW measure of 0.46, suggesting the results are auto-correlated. 
+
+```{r echo=FALSE}
+fm <- lm(expenditure ~ income, data = USConsump1993)
+summary(fm)
+## Durbin-Watson test (p. 122)
+dwtest(fm)
+```
+
+### A Newey–West
+
+A Newey–West estimator is used in statistics and econometrics to provide an estimate of the covariance matrix of the parameters of a regression-type model where the standard assumptions of regression analysis do not apply.
+
+```{r echo=TRUE}
+## Newey-West standard errors (Table 5.5, p. 125)
+coeftest(fm, vcov = NeweyWest(fm, lag = 3, prewhite = FALSE, adjust = TRUE))
+
+```
+
+### Compute the recursive residuals 
+
+A structural change in mid-1980s
+
+```{r echo=TRUE}
+library("strucchange")
+## Recursive residuals
+rr <- recresid(fm)
+rr
+## Recursive CUSUM test
+rcus <- efp(expenditure ~ income, data = USConsump1993)
+plot(rcus)
+```
