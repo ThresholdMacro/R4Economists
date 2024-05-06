@@ -1,0 +1,298 @@
+---
+title: "Kalecki Identities"
+runtime: shiny
+output: 
+  flexdashboard::flex_dashboard:
+    theme:
+      version: 4
+      bootswatch: solar
+      bg: "#1e3142"
+      fg: "#CCDDF3"
+      primary: "#3b4d5b"
+      secondary: "#123051"
+      info: "#3399f3"
+      navbar-bg: "#3b4d5b"
+      font_scale: 1.0
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(flexdashboard)
+library(shiny)
+library(shinyWidgets)
+library(bslib)
+library(readxl)
+library(highcharter)
+library(DT)
+library(stargazer)
+
+
+```
+
+Inputs {.sidebar data-width=300 bg="#1e3142"}
+===========================================
+
+```{r}
+source("R/dashboard_functions.R")
+
+## - input data here 
+Kaleckidata <- readr::read_csv("Data/Kaleckidata.csv")
+KaleckiPctGDP <- readr::read_csv("Data/KaleckiPctGDP.csv")
+colnames(KaleckiPctGDP) <- gsub("\\."," ", names(KaleckiPctGDP))
+
+K_identities <- names(KaleckiPctGDP[,-1])
+
+selectizeInput(
+    inputId = "Kalecki_ids",
+    label= "Choose identities to visualize",
+    choices = K_identities,
+    selected = c(
+      "Net Govt Saving",
+      "Foreign Saving",
+      "Net Investment",
+      "Corporate Profits"),
+    multiple = TRUE,
+    options = list(maxItems = 10)
+
+)
+
+corrtxt <- htmltools::HTML("Correlations: months lead(-)/lag(+)<br>Choose 2 series to calc correlations<br>")
+
+selectizeInput(
+    inputId = "cor",
+    label= corrtxt,
+    choices = c(K_identities),
+    selected = c(K_identities[c(7,6)]),
+    multiple = TRUE,
+    options = list(maxItems = 2)
+  )
+
+dateRangeInput(
+    inputId = "daterange",
+    label = "Select the date range:",
+    format = "yyyy-mm-dd",
+    start = Sys.Date() - lubridate::years(20),
+    end = Sys.Date(),
+    min = "1947-03-31",
+    max = Sys.Date()
+)
+```
+<hr style="border: 1px dashed white;" />
+Model:
+<br>
+<hr style="border: 1px dashed white;" />
+
+```{r}
+
+selectizeInput(
+    inputId = "dep_variables",
+    label= "Model: dependent variables",
+    choices = c(K_identities),
+    selected = c(K_identities[7]),
+    multiple = FALSE,
+    options = list(maxItems = 1)
+  )
+
+selectizeInput(
+    inputId = "ind_variables",
+    label= "Model: independent variables",
+    choices = c(K_identities),
+    selected = c(K_identities[c(6,2,3)]),
+    multiple = TRUE,
+    options = list(maxItems = 6)
+  )
+  
+  
+```
+
+```{r}
+
+# # define global variables for use in render sections
+dates <- reactive({input$daterange})
+dep_var <- reactive({input$dep_variables})
+ind_var <- reactive({input$ind_variables})
+
+dataSelected <- reactive({
+
+ alldata <-
+   Kaleckidata |>
+   select(Date, all_of(input$Kalecki_ids)) |>
+   dplyr::filter(Date > input$daterange[1])
+
+  return(alldata)
+
+})
+
+dataPctSelected <- reactive({
+  
+ alldata <-
+   KaleckiPctGDP |>
+   select(Date, all_of(input$Kalecki_ids)) |>
+   dplyr::filter(Date > input$daterange[1])
+
+  return(alldata)
+
+})
+
+
+model.cor <- reactive({
+  dates <- input$daterange
+  dep_var <- input$dep_variables
+  ind_var <- input$ind_variables
+
+  alldata <-
+    KaleckiPctGDP |>
+    dplyr::filter(Date > dates[1] &
+                    Date < dates[2]) |>
+    dplyr::select(all_of(dep_var), all_of(ind_var))
+  
+  colnames(alldata)[1] <- c("Dependent variable")
+  
+  model.cor <- lm(alldata$`Dependent variable`  ~ ., alldata[, -1])
+   
+   return(model.cor)
+  
+})
+
+```
+Charts
+=====================================  
+
+Column
+-------------------------------------
+    
+### 
+
+```{r}
+
+
+renderHighchart({
+# # map the global reactive variables to use within this render statement
+
+  alldata <- dataSelected()
+
+# # # any further data wrangling
+
+    lngdata <- lngdf(alldata)
+    citation <- 'Source: Bureau of Economic Analysis, FRED'
+    titletxt <- "Selected Kalecki identities: USD bln"
+    yaxistitle <- "USD blns"
+   
+# # #plot the result
+    
+    p <- hchartHA(lngdata, titletxt, citation,yaxistitle)
+
+  p   
+})
+```
+
+###
+
+```{r}
+renderHighchart({
+  
+  # map the global reactive variables to use within this render statement
+   # changeType <- changeType()
+   dates <- dates()
+     
+   alldata <-
+    KaleckiPctGDP |>
+     dplyr::filter(Date > dates[1] & Date < dates[2]) |>
+     dplyr::select(all_of(input$cor))
+   
+    cor <- ccf(alldata[,1], alldata[,2], lag.max = 20, na.action = na.pass, plot = FALSE)
+    ctitle <- paste0("Correlation: ",names(alldata[1])," vs ",names(alldata[2]))
+    cordf <- data.frame("X"=cor$lag,"Y"=cor$acf*100)
+    upperCI <- qnorm((1 + 0.95)/2)/sqrt(cor$n.used)*100
+ 
+# plot the result 
+  hchartHAhist(cordf,ctitle,upperCI)
+  
+})
+
+```
+
+Column
+-------------------------------------
+    
+### 
+
+```{r}
+renderHighchart({
+# # map the global reactive variables to use within this render statement
+
+  alldata <- dataPctSelected()
+   # KaleckiPctGDP |>
+   # select(Date, input$Kalecki_ids) |>
+   # dplyr::filter(Date > input$daterange[1])
+
+# # # any further data wrangling
+
+    lngdata <- lngdf(alldata)
+    citation <- 'Source: Bureau of Economic Analysis, FRED'
+    titletxt <- "Selected Kalecki identities: % of GDP"
+    yaxistitle <- "Pct of GDP"
+   
+# # #plot the result
+    
+    p <- hchartHA(lngdata, titletxt, citation, yaxistitle)
+
+  p   
+})
+```
+
+###
+
+```{r}
+renderHighchart({
+  
+  dep_var <- dep_var()
+  ind_var <- ind_var()
+  model.cor <- model.cor()
+  
+  modeldata <-
+    data.frame("Date" = tail(
+      KaleckiPctGDP$Date,
+      length(model.cor$model[,1])
+    ))
+  
+  modeldata <-
+      cbind(
+        modeldata,
+        "Dependent variable" = model.cor$model[,1],
+        "Fitted values" = model.cor$fitted.values
+      )
+  
+  
+  lngmodel <- lngdf(modeldata)
+  
+  model_ind_vars <- paste0(ind_var, collapse = ',')
+  model_dep_vars <- paste0(dep_var, collapse = ',')
+  
+  mktname <-
+    paste0(
+      "Dependent variable: ",
+      model_dep_vars,
+      " vs. modelled values: ",
+      model_ind_vars
+    )
+
+    citation <- 'Source: Bureau of Economic Analysis, FRED'
+    yaxistitle <- "Pct of GDP"
+  
+  hc <- hchartHA(lngmodel,  mktname, citation, yaxistitle)
+})
+
+```
+
+Model Summary
+=====================================  
+```{r}
+renderPrint({
+  
+  model.cor <- model.cor()
+  out <- data.frame(stargazer(model.cor, type = 'text')) 
+ 
+})
+
+```
