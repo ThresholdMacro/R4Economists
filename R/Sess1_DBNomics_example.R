@@ -1,7 +1,7 @@
 ## ---------------------------
 ##
 ## Script name: DBNomics_example.R
-## Purpose of script: download example timeseries from dbnomics 
+## Purpose of script: download example timeseries from dbnomics.world
 ## Author: Meyrick Chapman
 ## Date Created: Mon May 06 2024
 ## Copyright (c) Hedge Analytics Ltd, 2024
