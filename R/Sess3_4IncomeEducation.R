@@ -92,10 +92,6 @@ summary(EdAttainIncome)
 # plot data
 lngEdAttain <- lngdf(EdAttainIncome)
 
-p_EdAttain <- ggplot2::ggplot(lngEdAttain,aes(x=Date,y=value, color=key)) + geom_line()
-p_EdAttain
-p_EdAttain + darktheme + theme(legend.position = 'bottom') + scale_color_HA_qualitative()
-
 p_EdAttain2 <- ggstandard(lngEdAttain,"Educational Attainment & Income","Source:  U.S. Bureau of Labor Statistics, HedgeAnalytics","5 years","US$ weekly")
 p_EdAttain2
 p_EdAttain2 + darktheme + theme(legend.position = 'bottom') + scale_color_HA_qualitative()
@@ -103,6 +99,7 @@ p_EdAttain2 + darktheme + theme(legend.position = 'bottom') + scale_color_HA_qua
 fit1 <- lm(`Bachelors degree` ~ `Less than High School Diploma`, data = EdAttainIncome)
 
 summary(fit1)
+stargazer::stargazer(fit1,type = 'text')
 
 p_EdAttainLM <- ggplot(EdAttainIncome, aes(x = `Bachelors degree`, y = `Less than High School Diploma`)) + 
   geom_point() +
@@ -110,10 +107,10 @@ p_EdAttainLM <- ggplot(EdAttainIncome, aes(x = `Bachelors degree`, y = `Less tha
 
 charttitle <- "Mapping Income: Bachelors degree to High School Diploma"
 chartcaption <- "Source: U.S. Bureau of Labor Statistics"
-p_EdAttainLM +  labs(title = charttitle,
-                     caption = chartcaption) 
 
-p_EdAttainLM + labs(title = paste("Adj R2 = ",signif(summary(fit1)$adj.r.squared, 5),
+p_EdAttainLM + labs(title = charttitle,
+                    caption = chartcaption,
+                    subtitle = paste("Adj R2 = ",signif(summary(fit1)$adj.r.squared, 5),
                      "Intercept =",signif(fit1$coef[[1]],5 ),
                      " Slope =",signif(fit1$coef[[2]], 5),
                      " P =",signif(summary(fit1)$coef[2,4], 5)))

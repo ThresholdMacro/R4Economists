@@ -95,6 +95,7 @@ datatable(data= EZ_HICPwide[,-c(11,15,18)])
 # convert to time series object
 # ----------------------------
 
+# subset the large dataset for convenience
 srs_chosen <- c('Germany','France','Italy','Spain')
 
 ts_EZ_HICP <- xts::xts(EZ_HICPwide[,srs_chosen], order.by=as.Date(EZ_HICPwide$Date))
@@ -109,7 +110,7 @@ xts::addLegend(legend.loc="topleft", legend.names=names(ts_EZ_HICP),
 # long format
 selectHICP <-
   EZ_HICPsht |>
-  filter(Country %in% c('Germany','France','Italy','Spain'))
+  filter(Country %in% srs_chosen)
 
 p_HICPyoy <- ggplot(selectHICP, aes(x = Date, y = value, colour = Country)) + 
   geom_line() + 
@@ -128,7 +129,7 @@ p_HICPyoy + darktheme + theme(legend.position = 'bottom') + scale_color_HA_quali
 sapply(EZ_HICPwide[,-c(11,15,18)], function(x) sum(is.na(x)))
 
 # what to do? exclude? 
-tail(na.omit(EZ_HICPwide))
+df <- tail(na.omit(EZ_HICPwide))
 # oops! that excludes too much - blame Brexit! 
 # exclude columns with NAs
 EZ_HICPwide[ , apply(EZ_HICPwide, 2, function(x) !any(is.na(x)))]

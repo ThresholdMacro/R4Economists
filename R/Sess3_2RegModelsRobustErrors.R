@@ -57,7 +57,7 @@ stargazer::stargazer(model3, type = 'text')
 # may be considered as extensions to HC standard errors.
 #Robust standard errors
 RobSE <- lmtest::coeftest(model3,vcovHC)
-stargazer::stargazer(model3,model4,type='text')
+stargazer::stargazer(model3,coeftest(model3,vcovHC),type='text')
 #Clustered standard errors
 ClustSE <- lmtest::coeftest(model3,vcovCL,cluster=wage1$smsa)
 stargazer::stargazer(model3,RobSE,ClustSE,type='text')

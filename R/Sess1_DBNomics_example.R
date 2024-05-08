@@ -45,6 +45,9 @@ return(longdf)
 ## ---------------------------
 
 startdate <- as.Date("2000-01-01")
+# ----------------------------
+# get the data from db.nomics.world
+# ----------------------------
 
 EU_M3 <- rdbnomics::rdb(provider_code = "ECB",dataset_code = "BSI", ids = "M.U2.N.V.M30.X.1.U2.2300.Z01.E")
 
@@ -62,7 +65,7 @@ EU_M3sht$Date <- lubridate::ceiling_date(EU_M3sht$Date, unit = 'months')-1
 EU_M3sht$`BroadMoney EU M3` <- EU_M3sht$`BroadMoney EU M3`/1000
 
 # ----------------------------
-# built-in tidyr function to arrange data 
+# tidyr function to arrange data 
 # ----------------------------
 lngEU_M3 <-
   EU_M3sht |>

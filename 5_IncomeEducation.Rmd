@@ -50,8 +50,6 @@ Recursively because that is how FRED R client works. Print a summary of the resu
 
 ```{r include=FALSE}
 
-API_key<-'39889bdd8fa77d15b0ae08ab03f7020c'
-fredr_set_key(API_key)
 startdate <- as.Date("2000-01-01")
 
 CodeMap <- data.frame("SeriesID"= c("LEU0252919100Q","LEU0252917300Q",	"LEU0252916700Q"),
@@ -98,7 +96,7 @@ p_EdAttain
 
 Now let's make some formatting enhancements using our own customised ggplot functions. Then further customise to a preset theme which is contained in the source files quoted at the top of the script.
 
-```{r}
+```{r include = TRUE}
 p_EdAttain2 <- ggstandard(lngEdAttain,"Educational Attainment & Income","Source:  U.S. Bureau of Labor Statistics, HedgeAnalytics","5 years","US$ weekly")
 p_EdAttain2
 p_EdAttain2 + darktheme + theme(legend.position = 'bottom') + scale_color_HA_qualitative()
@@ -115,7 +113,7 @@ summary(fit1)
 
 
 ```
-prettify the results
+Prettify the results
 
 ```{r}
 out <- stargazer::stargazer(fit1, type = 'text')
@@ -143,4 +141,3 @@ p_EdAttainLM + labs(title = paste("Adj R2 = ",signif(summary(fit1)$adj.r.squared
 
 ```
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
