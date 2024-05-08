@@ -24,7 +24,9 @@ options(scipen = 6, digits = 4) # I prefer to view outputs in non-scientific not
 
 ## load up the packages we will need:  (uncomment as required)
 if(!require("pacman")) install.packages("pacman")
-pacman::p_load(tidyverse,
+pacman::p_load(plyr,
+zoo,
+tidyverse,
 ggthemes,
 sysfonts,
 showtext,
@@ -74,7 +76,7 @@ lngEU_M3 <-
 # ----------------------------
 # user defined function to arrange data - same output
 # ----------------------------
-lngEU_Ma <-
+lngEU_M3 <-
   lngdf(EU_M3sht)
 
 # ----------------------------

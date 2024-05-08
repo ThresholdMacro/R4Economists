@@ -45,7 +45,11 @@ add.col <- function(df, new.col) {
   cbind(df, new.col)
 }
 
+dat <- DFFmort
+column.nos <- 2
+rescale.many(dat,column.nos)
 rescale.many <- function(dat, column.nos) {
+
 nms <- names(dat)
 for (col in column.nos) {
 name <- paste(nms[col], ".rescaled", sep = "")
