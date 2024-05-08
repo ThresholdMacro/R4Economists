@@ -40,7 +40,26 @@ source("R/ggstdplots.R")
 
 startdate <- as.Date("2000-01-01")
 
+# ----------------------------
+# We are going to use HICP data from Eurostat, as provided by db.nomics.world
+# why not go to Eurostat? We could, but as we said in Session 1, db.nomics.world provides a huge set of data in standard format from many providers
+# so, knowing how to get data from db.nomics.world is very useful. 
+# There are other comprehensive sites, such as FRED (Federal Reserve Economic Database) hosted by St Louis Fed
+# FRED uses its own API functions in the alfredr & fredr packages
+# You need an API key for FRED. This is free and allows for recursive/multiple calls to the database. 
+# Have you got your API yet?
+# 
+# db.nomics.world
+# Get data from db.nomics.world. Note the parameters we provide. 
+# Here is the URL for the series on the website: https://db.nomics.world/Eurostat/prc_hicp_fp?q=M.RCH_A.CP00..
+# ----------------------------
 EZ_HICP <- rdbnomics::rdb(provider_code = "Eurostat",dataset_code = "prc_hicp_manr", ids = "M.RCH_A.CP00..")
+
+# ----------------------------
+# Let's look at what we got
+# ----------------------------
+View(EZ_HICP)
+
 # ----------------------------
 # use dplyr & lubridate to manipulate data
 # ----------------------------
@@ -99,7 +118,7 @@ datatable(data= EZ_HICPwide[,-c(11,15,18)])
 srs_chosen <- c('Germany','France','Italy','Spain')
 
 ts_EZ_HICP <- xts::xts(EZ_HICPwide[,srs_chosen], order.by=as.Date(EZ_HICPwide$Date))
-plot.xts(ts_EZ_HICP, auto.legend = TRUE, main = 'Headlinie HICP: major EZ countries')
+plot.xts(ts_EZ_HICP, auto.legend = TRUE, main = 'Headline HICP: major EZ countries')
 
 xts::addLegend(legend.loc="topleft", legend.names=names(ts_EZ_HICP), 
                lty = 1, col=1:ncol(ts_EZ_HICP),text.col=1:ncol(ts_EZ_HICP), bg="white", bty=1)
@@ -131,6 +150,9 @@ sapply(EZ_HICPwide[,-c(11,15,18)], function(x) sum(is.na(x)))
 # what to do? exclude? 
 df <- tail(na.omit(EZ_HICPwide))
 # oops! that excludes too much - blame Brexit! 
+# first, let's only exclude missing values from single columns
+
+
 # exclude columns with NAs
 EZ_HICPwide[ , apply(EZ_HICPwide, 2, function(x) !any(is.na(x)))]
 EZ_HICPwide <- EZ_HICPwide[ , apply(EZ_HICPwide, 2, function(x) !any(is.na(x)))]
