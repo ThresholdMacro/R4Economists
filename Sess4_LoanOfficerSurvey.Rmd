@@ -1,0 +1,137 @@
+---
+title: "Sess4_LoanOfficerSurvey"
+author: "Meyrick Chapman"
+date: "`r Sys.Date()`"
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+library(tidyr)
+library(plyr)
+library(dplyr)
+library(lubridate)
+library(ggplot2)
+library(ggthemes)
+library(readr)
+library(alfred)
+library(ecm)
+library(scales)
+# source("functions/packages.R")       # loads up all the packages we need
+
+## ---------------------------
+
+## load up our functions into memory
+
+add_rec_shade<-function(st_date,ed_date,shade_color="darkgray")
+{
+  library(ecm)
+  library(ggplot2)
+  library(dplyr)
+  recession<-readr::read_csv("Data/USrecession.csv", show_col_types = FALSE)
+  recession$date <- as.Date(ymd(recession$date))
+  recession$diff<-recession$value-lagpad(recession$value,k=1)
+  recession<-recession[!is.na(recession$diff),]
+  recession.start<-recession[recession$diff==1,]$date
+  recession.end<-recession[recession$diff==(-1),]$date
+  if(length(recession.start)>length(recession.end))
+  {recession.end<-c(recession.end,Sys.Date())}
+  if(length(recession.end)>length(recession.start))
+  {recession.start<-c(min(recession$date),recession.start)}
+  recs<-as.data.frame(cbind(recession.start,recession.end))
+  recs$recession.start<-
+    as.Date(as.numeric(recs$recession.start),origin=as.Date("1970-01-01"))
+  recs$recession.end<-as.Date(recs$recession.end,origin=as.Date("1970-01-01"))
+  if(nrow(recs)>0)
+  {
+    rec_shade<-geom_rect(data=recs, inherit.aes=F, aes(xmin=recession.start,
+                                                       xmax=recession.end, ymin=-Inf, ymax=+Inf), fill=shade_color,alpha=0.5)
+    return(rec_shade)
+  }
+}
+
+source("R/ggstdplots.R")
+```
+
+## Report on Senior Loan Officers Survey from Federal Reserve
+
+Survey of up to eighty large domestic banks and twenty-four U.S. branches and agencies of foreign banks. The Federal Reserve generally conducts the survey quarterly, timing it so that results are available for the January/February, April/May, August, and October/November meetings of the Federal Open Market Committee. The Federal Reserve occasionally conducts one or two additional surveys during the year. Questions cover changes in the standards and terms of the banks' lending and the state of business and household demand for loans. The survey often includes questions on one or two other topics of current interest.
+
+(taken from Fed website: <https://www.federalreserve.gov/data/sloos.htm)
+
+```{r Mortgages, echo=FALSE}
+dat_csv<-read_csv("Data/LoanOfficersSurvey.csv", show_col_types = FALSE)
+dat_csv <- 
+  dat_csv |>
+  dplyr::arrange(Date)
+loantype <- c("Mortgages")
+
+
+```
+
+A glimpse at the data.
+
+```{r showtable, echo = FALSE}
+DT::datatable(dat_csv)
+```
+
+Then maybe we'd like to comment on the recent evolution of mortgages Some comment would go here: s interest rates have increased, lenders have been assessing whether prospective borrowers can afford to repay their mortgages at higher interest rates. In turn, mortgagors have been adjusting the amount they borrow relative to their income and extending their mortgage terms. However, recently this behaviour has changed.
+
+```{r chart1, include=FALSE}
+p_loandemand <-
+dat_csv[,c("Date",loantype)] |> 
+  dplyr::filter(Date > as.Date("1990-01-01")) |>
+  tidyr::pivot_longer(-Date, names_to = "Position", values_to = "Index") |> 
+  ggplot(aes(x = Date, y = Index, color = Position)) + 
+  geom_line() + 
+  labs(title = paste0("Loan Officers Survey: ",loantype))+
+  theme(legend.position="bottom")
+```
+
+```{r showchart1, echo=FALSE}
+p_loandemand
+```
+
+Maybe we may wish to add in recession bars (separately calculated from FRED data) - and make some further comments.
+
+```{r showchart2, echo=FALSE}
+
+p_loandemand +
+  add_rec_shade(as.Date(min(dat_csv$Date)),as.Date(Sys.Date()))
+```
+
+```{r, echo = FALSE}
+mu <- dat_csv[,c(1:3)] |> 
+  dplyr::filter(Date > as.Date("1990-01-01")) |>
+  tidyr::pivot_longer(-Date, names_to = "Position", values_to = "Index")|>
+  ddply("Position", summarise, grp.mean=mean(Index))
+
+lst <-dat_csv[,c(1:3)] |> 
+  dplyr::filter(Date > as.Date("1990-01-01")) |>
+  tidyr::pivot_longer(-Date, names_to = "Position", values_to = "Index")|>
+  ddply("Position", summarise, grp.mean=last(Index))
+
+chart3 <-
+dat_csv[,c(1:3)] |> 
+  dplyr::filter(Date > as.Date("1990-01-01")) |>
+  tidyr::pivot_longer(-Date, names_to = "Position", values_to = "Index") |> 
+  ggplot(aes(x = Index, color = Position)) + 
+  geom_histogram(aes(y=after_stat(density)), fill="white", position="dodge", binwidth = 3)+
+  geom_density(alpha=.2, fill="#FF6666") +
+  geom_vline(data=lst, aes(xintercept=grp.mean, color=Position),
+             linetype="dashed") +
+  labs(title = "SLOS: response distribution, with current response (dotted verticals)", 
+       subtitle = paste0("To: ",format(dat_csv$Date[nrow(dat_csv)],"%B %Y")), 
+       caption = "source: Federal Reserve, HedgeAnalytics") +
+  theme(legend.position="bottom")
+
+```
+
+Then maybe some more comment on the distribution of responses over time, and where most recent responses are. 
+
+```{r showchart3, echo=TRUE}
+chart3
+```
+

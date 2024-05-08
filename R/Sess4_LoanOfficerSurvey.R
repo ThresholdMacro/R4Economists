@@ -45,9 +45,7 @@ add.col <- function(df, new.col) {
   cbind(df, new.col)
 }
 
-dat <- DFFmort
-column.nos <- 2
-rescale.many(dat,column.nos)
+
 rescale.many <- function(dat, column.nos) {
 
 nms <- names(dat)
@@ -144,14 +142,15 @@ dat_csv[,c("Date",loantype)] |>
   tidyr::pivot_longer(-Date, names_to = "Position", values_to = "Index") |> 
   ggplot(aes(x = Date, y = Index, color = Position)) + 
   geom_line() + 
-  labs(title = "Loan Officers Survey")+
+  labs(title = paste0("Loan Officers Survey: ",loantype))+
   theme(legend.position="bottom")
 
 # add recesssion bars
-
+p_loandemand
 p_loandemand +
   add_rec_shade(as.Date(min(dat_csv$Date)),as.Date(Sys.Date()))
   
+# `Higher Spreads to Large/Medium Cos` `Higher Spreads to Small Cos`
 
 mu <- dat_csv[,c(1:3)] |> 
   dplyr::filter(Date > as.Date("1990-01-01")) |>
@@ -176,6 +175,8 @@ dat_csv[,c(1:3)] |>
        caption = "source: Federal Reserve, HedgeAnalytics") +
   theme(legend.position="bottom")
 
+# `Tighter Conds to Large/Medium Cos` `Tighter Conds to Small Cos`
+
 mu <- dat_csv[,c(1,4,5)] |> 
   dplyr::filter(Date > as.Date("1990-01-01")) |>
   tidyr::pivot_longer(-Date, names_to = "Position", values_to = "Index")|>
@@ -199,6 +200,7 @@ dat_csv[,c(1,4,5)] |>
        caption = "source: Federal Reserve, HedgeAnalytics") +
   theme(legend.position="bottom")
 
+# `Loan Demand: Large/Medium Cos` `Loan Demand: Small Cos`
 
 mu <- dat_csv[,c(1,6,7)] |> 
   dplyr::filter(Date > as.Date("1991-01-01")) |>
@@ -222,6 +224,8 @@ dat_csv[,c(1,6,7)] |>
        subtitle = paste0("To: ",format(dat_csv$Date[nrow(dat_csv)],"%B %Y")), 
        caption = "source: Federal Reserve, HedgeAnalytics") +
   theme(legend.position="bottom")
+
+# Mortgages
 
 mu <- dat_csv[,c(1,14)] |> 
   dplyr::filter(Date > as.Date("1990-01-01")) |>
@@ -254,15 +258,18 @@ dat_csv[,c(1,14)] |>
   labs(title = "Loan Officers Survey: demand for mortgages")+
   theme(legend.position="bottom")
 
+# Mortgages & Fed interest rates
+
 DFF <- get_fred_series(series_id = 'DFF', series_name = 'Fed Funds rate', observation_start = '1990-01-01')
 colnames(DFF)[1] <- 'Date'
 DFFmort <-
   left_join(dat_csv[,c(1,14)],DFF, by = 'Date')
 
-DFFmort <-
-rescale.many(DFFmort,2)
+zDFFmort <- DFFmort
+zDFFmort[, c(2, 3)] <-
+  lapply(DFFmort[,c(2, 3)], function(x) c(scale(x)))
 
-DFFmort[,c(1,2,3)] |>
+zDFFmort[,c(1,2,3)] |>
 dplyr::filter(Date > as.Date("1990-01-01")) |>
   tidyr::pivot_longer(-Date, names_to = "Position", values_to = "Index") |> 
   ggplot(aes(x = Date, y = Index, color = Position)) + 

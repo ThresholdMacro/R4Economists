@@ -1,6 +1,8 @@
 ---
 title: "R Notebook for AER examples"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
 

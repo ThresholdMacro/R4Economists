@@ -58,33 +58,35 @@ ggplotRegression <- function (fit) {
 
 ## ---------------------------
 
-API_key<-'39889bdd8fa77d15b0ae08ab03f7020c'
-fredr_set_key(API_key)
-startdate <- as.Date("2000-01-01")
+# API_key<-'x'
+# fredr_set_key(API_key)
+# startdate <- as.Date("2000-01-01")
+# 
+# CodeMap <- data.frame("SeriesID"= c("LEU0252919100Q","LEU0252917300Q",	"LEU0252916700Q"),
+#                       "SeriesName" = c("Bachelors degree","High School diploma only", "Less than High School Diploma"))
+# 
+# # fetch the data from FRED
+# # first series
+# EdAttainIncome <- alfred::get_fred_series(CodeMap[1,1], series_name = CodeMap[1,2], observation_start = startdate)
+# 
+# # then loop for other series, starting with second row
+# for(srs in 2:nrow(CodeMap)) {
+#   df <-
+#     alfred::get_fred_series(CodeMap[srs, 1],
+#                             series_name = CodeMap[srs, 2],
+#                             observation_start = startdate)
+#   EdAttainIncome <- cbind(EdAttainIncome, df[, 2])
+#   colnames(EdAttainIncome)[srs + 1] <- CodeMap[srs, 2]
+# }
+# 
+# colnames(EdAttainIncome)[1] <- "Date"
+# 
+# 
+# 
+# # store the data locally
+# readr::write_csv(EdAttainIncome,"Data/IncomeEducationalAttainment.csv")
 
-CodeMap <- data.frame("SeriesID"= c("LEU0252919100Q","LEU0252917300Q",	"LEU0252916700Q"),
-                      "SeriesName" = c("Bachelors degree","High School diploma only", "Less than High School Diploma"))
-
-# fetch the data from FRED
-# first series
-EdAttainIncome <- alfred::get_fred_series(CodeMap[1,1], series_name = CodeMap[1,2], observation_start = startdate)
-
-# then loop for other series, starting with second row
-for(srs in 2:nrow(CodeMap)) {
-  df <-
-    alfred::get_fred_series(CodeMap[srs, 1],
-                            series_name = CodeMap[srs, 2],
-                            observation_start = startdate)
-  EdAttainIncome <- cbind(EdAttainIncome, df[, 2])
-  colnames(EdAttainIncome)[srs + 1] <- CodeMap[srs, 2]
-}
-
-colnames(EdAttainIncome)[1] <- "Date"
-
-
-
-# store the data locally
-readr::write_csv(EdAttainIncome,"Data/IncomeEducationalAttainment.csv")
+EdAttainIncome <- readr::read_csv("Data/IncomeEducationalAttainment.csv")
 
 # look at summary of data
 summary(EdAttainIncome)
@@ -92,27 +94,40 @@ summary(EdAttainIncome)
 # plot data
 lngEdAttain <- lngdf(EdAttainIncome)
 
-p_EdAttain2 <- ggstandard(lngEdAttain,"Educational Attainment & Income","Source:  U.S. Bureau of Labor Statistics, HedgeAnalytics","5 years","US$ weekly")
+p_EdAttain2 <- ggstandard(
+  lngEdAttain,
+  "Educational Attainment & Income",
+  "Source:  U.S. Bureau of Labor Statistics, HedgeAnalytics",
+  "5 years",
+  "US$ weekly"
+)
 p_EdAttain2
 p_EdAttain2 + darktheme + theme(legend.position = 'bottom') + scale_color_HA_qualitative()
 
 fit1 <- lm(`Bachelors degree` ~ `Less than High School Diploma`, data = EdAttainIncome)
 
 summary(fit1)
-stargazer::stargazer(fit1,type = 'text')
+stargazer::stargazer(fit1, type = 'text')
 
-p_EdAttainLM <- ggplot(EdAttainIncome, aes(x = `Bachelors degree`, y = `Less than High School Diploma`)) + 
+p_EdAttainLM <- ggplot(EdAttainIncome,
+                       aes(x = `Bachelors degree`, y = `Less than High School Diploma`)) +
   geom_point() +
   stat_smooth(method = "lm", col = "red")
 
 charttitle <- "Mapping Income: Bachelors degree to High School Diploma"
 chartcaption <- "Source: U.S. Bureau of Labor Statistics"
 
-p_EdAttainLM + labs(title = charttitle,
-                    caption = chartcaption,
-                    subtitle = paste("Adj R2 = ",signif(summary(fit1)$adj.r.squared, 5),
-                     "Intercept =",signif(fit1$coef[[1]],5 ),
-                     " Slope =",signif(fit1$coef[[2]], 5),
-                     " P =",signif(summary(fit1)$coef[2,4], 5)))
-
-
+p_EdAttainLM + labs(
+  title = charttitle,
+  caption = chartcaption,
+  subtitle = paste(
+    "Adj R2 = ",
+    signif(summary(fit1)$adj.r.squared, 5),
+    "Intercept =",
+    signif(fit1$coef[[1]], 5),
+    " Slope =",
+    signif(fit1$coef[[2]], 5),
+    " P =",
+    signif(summary(fit1)$coef[2, 4], 5)
+  )
+)

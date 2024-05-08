@@ -71,7 +71,12 @@ startdate <- as.Date("1999-01-01")
 EU_M3 <- rdbnomics::rdb(provider_code = "ECB",dataset_code = "BSI", ids = "M.U2.N.V.M30.X.1.U2.2300.Z01.E")
 
 # ----------------------------
-# use dplyr & lubridate to manipulate data
+# use dplyr & lubridate to manipulate data - both parts of the tidyverse collection of packages
+# the tidyverse standardises the treatment of data in a manner that restricts errors, and makes things clearer (tidier)
+# it has been said that if you want to do anything serious data analysis you need to know dplyr 
+# that's an overstatement, but it really helps A LOT 
+# especially when used with pipe command (either %>% or |>) which is part of the tidyverse
+# R has now included the pipe command into its base language
 # ----------------------------
 
 EU_M3sht <-
@@ -128,4 +133,5 @@ ggplot(data = lngEU_M3, aes(x = Date, y = value, color = key)) +
 p_EU_M3 <- ggstandard(lngEU_M3,"Eurozone M3 since 1999, level, EUR bln", "Source: db.nomics", "5 years","EUR bln")
 p_EU_M3
 p_EU_M3 + darktheme + theme(legend.position = 'bottom') + scale_color_HA_qualitative()
+
 
