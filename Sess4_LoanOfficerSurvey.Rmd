@@ -59,7 +59,7 @@ source("R/ggstdplots.R")
 
 Survey of up to eighty large domestic banks and twenty-four U.S. branches and agencies of foreign banks. The Federal Reserve generally conducts the survey quarterly, timing it so that results are available for the January/February, April/May, August, and October/November meetings of the Federal Open Market Committee. The Federal Reserve occasionally conducts one or two additional surveys during the year. Questions cover changes in the standards and terms of the banks' lending and the state of business and household demand for loans. The survey often includes questions on one or two other topics of current interest.
 
-(taken from Fed website: <https://www.federalreserve.gov/data/sloos.htm)
+(taken from Fed website: \<<https://www.federalreserve.gov/data/sloos.htm>)
 
 ```{r Mortgages, echo=FALSE}
 dat_csv<-read_csv("Data/LoanOfficersSurvey.csv", show_col_types = FALSE)
@@ -71,13 +71,38 @@ loantype <- c("Mortgages")
 
 ```
 
-A glimpse at the data.
+### A glimpse at the data.
 
-```{r showtable, echo = FALSE}
-DT::datatable(dat_csv)
+Simple table data is easy to display using knitr::kable.
+
+In most cases, `knitr::kable(x)` may be enough if you only need a simple table for the data object `x`. The `format` argument is automatically set according to the **knitr** source document format. Its possible values are `pipe` (tables with columns separated by pipes), `simple` (Pandoc’s simple tables), `latex` (LaTeX tables), `html` (HTML tables), and `rst` (reStructuredText tables). For R Markdown documents, `kable()` uses the `pipe` format for tables by default, which looks like this:
+
+```{r table1, echo=FALSE}
+reduceddata <- tail(dat_csv[,c(1:7,14)])
+knitr::kable(reduceddata, format = 'html',caption = "Recent Senior Loan Officer Survey results" )
 ```
 
-Then maybe we'd like to comment on the recent evolution of mortgages Some comment would go here: s interest rates have increased, lenders have been assessing whether prospective borrowers can afford to repay their mortgages at higher interest rates. In turn, mortgagors have been adjusting the amount they borrow relative to their income and extending their mortgage terms. However, recently this behaviour has changed.
+### More sophisticated options. 
+
+This is an implementation of DT::datatable. DT only supports the HTML format but is very customisable. It is built on top of the JavaScript library **DataTables**, which can turn a static table into an interactive table on an HTML page. You may sort, search, and paginate the table. **DT** also supports formatting the cells, works with Shiny to build interactive applications, and has included a large number of **DataTables** extensions (e.g., you may export the table to Excel, or interactively reorder columns). See the package repository for more information: <https://github.com/rstudio/DT>.
+
+
+DT does not have an explicit 'title' parameter, so we need to add some html tags above the chart
+
+<H3>Recent Senior Loan Officer Survey results</H3> 
+
+```{r table2, echo = FALSE}
+reduceddata2 <- dat_csv[,c(1:7,14)]
+DT::datatable(reduceddata2,  caption = "A subset of recent Senior Loan Officer Survey results" )
+
+```
+
+## Commentary
+
+Maybe we'd like to comment on the recent evolution of mortgages Some comment would go here: 
+
+As interest rates have increased, lenders have been assessing whether prospective borrowers can afford to repay their mortgages at higher interest rates. In turn, mortgagors have been adjusting the amount they borrow relative to their income and extending their mortgage terms. However, recently this behaviour has changed.
+
 
 ```{r chart1, include=FALSE}
 p_loandemand <-
@@ -90,13 +115,15 @@ dat_csv[,c("Date",loantype)] |>
   theme(legend.position="bottom")
 ```
 
-```{r showchart1, echo=FALSE}
+```{r showchart1, echo=FALSE, fig.width=8, fig.height=6}
 p_loandemand
 ```
 
-Maybe we may wish to add in recession bars (separately calculated from FRED data) - and make some further comments.
+## Add further elements to existing charts
 
-```{r showchart2, echo=FALSE}
+Add in recession bars (separately calculated from FRED data) - and make some further comments.
+
+```{r showchart2, echo=FALSE, fig.width=8, fig.height=6}
 
 p_loandemand +
   add_rec_shade(as.Date(min(dat_csv$Date)),as.Date(Sys.Date()))
@@ -129,9 +156,80 @@ dat_csv[,c(1:3)] |>
 
 ```
 
-Then maybe some more comment on the distribution of responses over time, and where most recent responses are. 
+## More commentary & charts 
 
-```{r showchart3, echo=TRUE}
+Then maybe some more comment on the distribution of responses over time, and where most recent responses are.
+
+Progress toward normalization in lending practices generally halted in the first quarter as the Federal Reserve turned more hawkish amid the rebound in inflation, according to data in a Fed report released on Monday.
+
+The Senior Loan Officer Opinion Survey on Bank Lending Practices showed that demand for commercial, industrial and consumer loans declined at a slightly faster rate, reversing the improving trend that occurred in the second half of last year. At the same time, lending standards for industrial and commercial loans were tighter in the first quarter.
+
+```{r showchart3, echo=FALSE, fig.width=8, fig.height=6}
 chart3
 ```
 
+```{r chart4, echo = FALSE}
+DFF <- get_fred_series(series_id = 'DFF', series_name = 'Fed Funds rate', observation_start = '1990-01-01')
+colnames(DFF)[1] <- 'Date'
+DFFmort <-
+  left_join(dat_csv[,c(1,2,14)],DFF, by = 'Date')
+
+zDFFmort <- DFFmort
+zDFFmort[, c(2, 3, 4)] <-
+  lapply(DFFmort[,c(2, 3, 4 )], function(x) c(scale(x)))
+
+p_MortFedFunds <-
+  zDFFmort[, c(1, 2, 4)] |>
+  dplyr::filter(Date > as.Date("1990-01-01")) |>
+  tidyr::pivot_longer(-Date, names_to = "Position", values_to = "Index") |>
+  ggplot(aes(x = Date, y = Index, color = Position)) +
+  geom_line() +
+  labs(title = "Fed Funds & mortgage demand in SLOS") +
+  theme(legend.position = "bottom")
+
+```
+
+## Impact of Federal Reserve Funds rate
+
+When the Fed makes it more expensive for banks to borrow by targeting a higher federal funds rate, the banks in turn pass on the higher costs to their customers. Interest rates on consumer borrowing, including mortgage rates, tend to go up. And as short-term interest rates go up, long-term interest rates typically also rise. As this happens, and as the interest rate on the 10-year Treasury bond moves up, mortgage rates also tend to rise.
+
+Mortgage lenders set interest rates based on their expectations for future inflation and interest rates. The supply of, and demand for, mortgage-backed securities also influences interest rates, providing another lever by which monetary policy affects mortgage rates and mortgage lending. 8
+
+```{r showchart4, echo=FALSE, fig.width=8, fig.height=6}
+p_MortFedFunds
+```
+
+## Display calculation results 
+### Using html tags
+
+Take a look at the source code to see how html tags are inserted directly into the text in this section. The **stargazer** is in bold using markdown's built-in markup code. These can be mixed which is useful. Basic formatting is generally available, but if something special is needed, html tags (or CSS formatting) can add more sophisticated formats.  
+
+Perhaps you would like to show a linear model between Fed Funds and mortgage demand.
+
+The **`stargazer`** command produces LaTeX code for well-formatted tables that hold regression analysis results from several models side-by-side, as well as summary statistics.
+
+Here stargazer shows 2 model results: 
+<ol>
+  <li> mortgage demand as reported by SLOS vs. Fed Funds</li>
+  <li>reports of higher spreads on loans to Large/Medium companies vs. Fed Funds rate</li>
+</ol>
+Neither has a high R<sup>2</sup> rate. 
+
+The ordered list items and the superscript 2 in R<sup>2</sup> use html tags. 
+
+
+```{r lm1, echo=FALSE}
+
+fit1 <- lm(Mortgages~`Fed Funds rate`,data = zDFFmort)
+fit2 <- lm(`Higher Spreads to Large/Medium Cos`~`Fed Funds rate`,data = zDFFmort)
+
+```
+
+```{r showmodel, echo = FALSE, warning = FALSE, message = FALSE, results='asis'}
+stargazer::stargazer(fit1, fit2, type = 'html')
+```
+
+## Rmarkdown is useful 
+I hope this demonstration shows some of the useful features of Rmarkdown, incorporating R into usable html, pdf, Word output. 
+
+End of report
