@@ -410,17 +410,18 @@ Meyrick Chapman
 <ol type="1">
 <li><p>Session 1: Basics - GitHub repo: <a href="https://github.com/ThresholdMacro/R4Economists.git" class="uri">https://github.com/ThresholdMacro/R4Economists.git</a> - Basic Calculations and Data Types - Working with Data</p></li>
 <li><p>Session 2: Exploratory Data Analysis (EDA) - Visualizing Economic Relationships</p></li>
-<li><p>Session 3: Introduction to R for Economics - Linear models, fancy linear models, some tests for robust errors - Time series -ARIMA</p></li>
-<li><p>Session 4: Build a (slightly) interactive dashboard - Look at more complex dashboards</p></li>
+<li><p>Session 3: Introduction to R for Economics - Linear models, fancy linear models, some tests for robust errors - Time series - ARIMA</p></li>
+<li><p>Session 4: Build a (slightly) interactive dashboard - Take a look at more complex dashboards</p></li>
 </ol>
 </section>
 <section id="session-1" class="slide level2">
 <h2>Session 1</h2>
 <p>Setting Up the R Environment, basic calculation, data</p>
 <ul>
-<li><p>You should already have: - Setup a Posit cloud account to create an on-line RStudio environment <a href="https://posit.cloud/" class="uri">https://posit.cloud/</a> . If you need help, this is very useful: <a href="https://learnr-examples.shinyapps.io/ex-setup-r/" class="uri">https://learnr-examples.shinyapps.io/ex-setup-r/</a> (available in my Git repo).</p></li>
+<li><p>You should already have: - setup a Posit cloud account to create an on-line RStudio environment <a href="https://posit.cloud/" class="uri">https://posit.cloud/</a> .</p></li>
+<li><p>If you need help for local setup, this is very useful: <a href="https://learnr-examples.shinyapps.io/ex-setup-r/" class="uri">https://learnr-examples.shinyapps.io/ex-setup-r/</a> (available in my Git repo).</p></li>
 <li><p>Basic Calculations and Data Types: Perform arithmetic operations, assign variables, data types, datastructures.</p></li>
-<li><p>Working with Data: import data from CSV, Excel. Download data. Data Manipulation: subset data with dplyr (filtering, grouping),.</p></li>
+<li><p>Working with Data: import data from CSV, Excel. Download data. Data Manipulation: subset data with dplyr (filtering, grouping).</p></li>
 </ul>
 </section>
 <section id="the-environment" class="slide level2">
@@ -485,14 +486,13 @@ Meyrick Chapman
 <section id="vector-maths" class="slide level2">
 <h2>Vector maths</h2>
 <ul>
-<li>from Wisconsin School of Business: <a href="https://pubs.wsb.wisc.edu/academics/analytics-using-r-2019/" class="uri">https://pubs.wsb.wisc.edu/academics/analytics-using-r-2019/</a></li>
 <li>One big advantage of R is in its ability to work with vectors.
 <ul>
 <li>ASSIGN a vector from 1-5. Add a constant to each element of the vector.</li>
 <li>Multiply each element of a vector by a constant.</li>
 <li>Add two vectors together that are the same length.</li>
 <li>Multiply two vectors together of the same length.</li>
-<li>Raise each element of a vector to a power (or other manipulation)</li>
+<li>Raise each element of a vector to a power (or other manipulation)l</li>
 </ul></li>
 </ul>
 </section>
@@ -520,14 +520,14 @@ Meyrick Chapman
 </div>
 </div>
 </section>
-<section id="simple-calcs-assign-values-vectors" class="slide level2">
-<h2>Simple calcs: assign values, vectors</h2>
+<section id="simple-interest-rate-calculations" class="slide level2">
+<h2>Simple interest rate calculations</h2>
 <ul>
-<li>The return from an interest rate over 2 periods. i =0.05 and t =2 .
+<li>The return from an interest rate over 2 periods. 𝑖 =0.05 and 𝑡 =2 .
 <ul>
-<li>accum holds the result of the calculation of&nbsp;1+𝑖*𝑡&nbsp;for the values of i 𝑖&nbsp;and t 𝑡.</li>
+<li>accum holds the result of the calculation of&nbsp;1+𝑖*𝑡&nbsp;for the values of 𝑖&nbsp;and 𝑡.</li>
 <li>Exponentiate the quantity (1+𝑖)&nbsp;to the&nbsp;𝑡 th power.</li>
-<li>Create a sequence for t &amp; recalculate.</li>
+<li>Create a sequence for &nbsp;𝑡 &amp; recalculate.</li>
 <li>Create a dataframe.</li>
 </ul></li>
 </ul>
@@ -554,8 +554,7 @@ Meyrick Chapman
 <pre><code> [1] 1.000000 1.024695 1.050000 1.075930 1.102500 1.129726 1.157625 1.186213
  [9] 1.215506 1.245523 1.276282</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a>accum4 <span class="ot">&lt;-</span> <span class="fu">data.frame</span> (<span class="st">"Data"</span><span class="ot">=</span>(<span class="dv">1</span><span class="sc">+</span>i)<span class="sc">^</span>t)</span>
-<span id="cb21-2"><a href=""></a>accum4<span class="sc">$</span>name <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"period "</span>,t)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a>accum4 <span class="ot">&lt;-</span> <span class="fu">data.frame</span> (<span class="st">"Period"</span> <span class="ot">=</span> t, <span class="st">"Data"</span><span class="ot">=</span>(<span class="dv">1</span><span class="sc">+</span>i)<span class="sc">^</span>t)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="create-a-function" class="slide level2">
@@ -670,18 +669,18 @@ Meyrick Chapman
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href=""></a><span class="co"># We already created a dataframe named accum4 (see Environment)</span></span>
 <span id="cb40-2"><a href=""></a>accum4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>       Data       name
-1  1.000000   period 0
-2  1.024695 period 0.5
-3  1.050000   period 1
-4  1.075930 period 1.5
-5  1.102500   period 2
-6  1.129726 period 2.5
-7  1.157625   period 3
-8  1.186213 period 3.5
-9  1.215506   period 4
-10 1.245523 period 4.5
-11 1.276282   period 5</code></pre>
+<pre><code>   Period     Data
+1     0.0 1.000000
+2     0.5 1.024695
+3     1.0 1.050000
+4     1.5 1.075930
+5     2.0 1.102500
+6     2.5 1.129726
+7     3.0 1.157625
+8     3.5 1.186213
+9     4.0 1.215506
+10    4.5 1.245523
+11    5.0 1.276282</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href=""></a>fact1 <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"single"</span>, <span class="st">"married"</span>, <span class="st">"married"</span>, <span class="st">"single"</span>))</span>
 <span id="cb42-2"><a href=""></a>fact1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -746,7 +745,7 @@ Levels: married single</code></pre>
 <section id="data-from-internet-db.nomics-database" class="slide level2">
 <h2>Data from internet (db.nomics database)</h2>
 <ul>
-<li>d b.nomics.world is a great source of global economic data from numerous providers, delivered in a standard (or nearly standard) format. This makes it very useful.</li>
+<li>db.nomics.world is a great source of global economic data from numerous providers, delivered in a standard (or nearly standard) format. This makes it very useful.</li>
 <li>Use script Sess1_DBNomics_example.R in R directory</li>
 </ul>
 </section>
@@ -755,8 +754,8 @@ Levels: married single</code></pre>
 <ul>
 <li>The same script shows basic examples of data manipulation
 <ul>
-<li>dplyr is a powerful manipulation package for R, part of the tidyverse suite.</li>
-<li>lubridate is also part of the tidyverse suite, working with dates</li>
+<li><em>dplyr</em> is a powerful manipulation package for R, part of the tidyverse suite.</li>
+<li><em>lubridate</em> is also part of the tidyverse suite, working with dates</li>
 <li>Also introduces user-defined functions and plot formatting</li>
 <li>Not so basic.</li>
 </ul></li>
@@ -790,11 +789,12 @@ Levels: married single</code></pre>
 <section id="introduction-to-r-for-economics" class="slide level2">
 <h2>Introduction to R for Economics</h2>
 <ul>
-<li>Most examples taken from Dr Nick Huntington-Klein: <a href="https://www.youtube.com/">https://www.youtube.com/@NickHuntingtonKlein</a></li>
+<li>Examples from Dr Nick Huntington-Klein: <a href="https://www.youtube.com/">https://www.youtube.com/@NickHuntingtonKlein</a></li>
 <li>Linear models, fancy linear models, some tests for robust errors</li>
 <li>Time series</li>
 <li>ARIMA</li>
-<li>Use script Sess3_1RegModelsTS_ARIMA.R in R directory</li>
+<li>First we’ll use script Sess3_1RegModelsTS_ARIMA.R in R directory</li>
+<li>Then we’ll look at Sess3_2IncomeEducation.Rmd</li>
 </ul>
 </section></section>
 <section>
@@ -807,8 +807,15 @@ Levels: married single</code></pre>
 <ul>
 <li>Build a simple (slightly) interactive dashboard</li>
 <li>Use Rmarkdown file Sess4_LoanOfficerSurvey.Rmd</li>
-<li>Use Rmarkdown file Sess4_Kalecki</li>
+<li>Use Rmarkdown file Sess4_Kalecki.Rmd</li>
 <li>Look at more complex dashboards</li>
+</ul>
+</section>
+<section id="references-citations" class="slide level2">
+<h2>References &amp; citations</h2>
+<ul>
+<li>from Wisconsin School of Business: <a href="https://pubs.wsb.wisc.edu/academics/analytics-using-r-2019/" class="uri">https://pubs.wsb.wisc.edu/academics/analytics-using-r-2019/</a></li>
+<li>Dr Nick Huntington-Klein: <a href="https://www.youtube.com/">https://www.youtube.com/@NickHuntingtonKlein</a></li>
 </ul>
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">

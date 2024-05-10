@@ -17,19 +17,21 @@ format:
 
 2.  Session 2: Exploratory Data Analysis (EDA) - Visualizing Economic Relationships
 
-3.  Session 3: Introduction to R for Economics - Linear models, fancy linear models, some tests for robust errors - Time series -ARIMA
+3.  Session 3: Introduction to R for Economics - Linear models, fancy linear models, some tests for robust errors - Time series - ARIMA
 
-4.  Session 4: Build a (slightly) interactive dashboard - Look at more complex dashboards
+4.  Session 4: Build a (slightly) interactive dashboard - Take a look at more complex dashboards
 
 ## Session 1
 
 Setting Up the R Environment, basic calculation, data
 
--   You should already have: - Setup a Posit cloud account to create an on-line RStudio environment <https://posit.cloud/> . If you need help, this is very useful: <https://learnr-examples.shinyapps.io/ex-setup-r/> (available in my Git repo).
+-   You should already have: - setup a Posit cloud account to create an on-line RStudio environment <https://posit.cloud/> .
+
+-   If you need help for local setup, this is very useful: <https://learnr-examples.shinyapps.io/ex-setup-r/> (available in my Git repo).
 
 -   Basic Calculations and Data Types: Perform arithmetic operations, assign variables, data types, datastructures.
 
--   Working with Data: import data from CSV, Excel. Download data. Data Manipulation: subset data with dplyr (filtering, grouping),.
+-   Working with Data: import data from CSV, Excel. Download data. Data Manipulation: subset data with dplyr (filtering, grouping).
 
 ## The environment
 
@@ -69,13 +71,12 @@ y^2
 
 ## Vector maths
 
--   from Wisconsin School of Business: <https://pubs.wsb.wisc.edu/academics/analytics-using-r-2019/>
 -   One big advantage of R is in its ability to work with vectors.
     -   ASSIGN a vector from 1-5. Add a constant to each element of the vector.
     -   Multiply each element of a vector by a constant.
     -   Add two vectors together that are the same length.
     -   Multiply two vectors together of the same length.
-    -   Raise each element of a vector to a power (or other manipulation)
+    -   Raise each element of a vector to a power (or other manipulation)l
 
 ## Vector maths in console
 
@@ -91,12 +92,12 @@ x^2
 
 ```
 
-## Simple calcs: assign values, vectors
+## Simple interest rate calculations
 
--   The return from an interest rate over 2 periods. i =0.05 and t =2 .
-    -   accum holds the result of the calculation of 1+𝑖\*𝑡 for the values of i 𝑖 and t 𝑡.
+-   The return from an interest rate over 2 periods. 𝑖 =0.05 and 𝑡 =2 .
+    -   accum holds the result of the calculation of 1+𝑖\*𝑡 for the values of 𝑖 and 𝑡.
     -   Exponentiate the quantity (1+𝑖) to the 𝑡 th power.
-    -   Create a sequence for t & recalculate.
+    -   Create a sequence for  𝑡 & recalculate.
     -   Create a dataframe.
 
 ## Interest rate calculation in console
@@ -232,14 +233,14 @@ summary( EdAttainIncome )
 
 ## Data from internet (db.nomics database)
 
--   d b.nomics.world is a great source of global economic data from numerous providers, delivered in a standard (or nearly standard) format. This makes it very useful.
+-   db.nomics.world is a great source of global economic data from numerous providers, delivered in a standard (or nearly standard) format. This makes it very useful.
 -   Use script Sess1_DBNomics_example.R in R directory
 
 ## Data manipulation
 
 -   The same script shows basic examples of data manipulation
-    -   dplyr is a powerful manipulation package for R, part of the tidyverse suite.
-    -   lubridate is also part of the tidyverse suite, working with dates
+    -   *dplyr* is a powerful manipulation package for R, part of the tidyverse suite.
+    -   *lubridate* is also part of the tidyverse suite, working with dates
     -   Also introduces user-defined functions and plot formatting
     -   Not so basic.
 
@@ -260,11 +261,12 @@ summary( EdAttainIncome )
 
 ## Introduction to R for Economics
 
--   Most examples taken from Dr Nick Huntington-Klein: [https://www.youtube.com/\@NickHuntingtonKlein](https://www.youtube.com/)
+-   Examples from Dr Nick Huntington-Klein: [https://www.youtube.com/\@NickHuntingtonKlein](https://www.youtube.com/)
 -   Linear models, fancy linear models, some tests for robust errors
 -   Time series
 -   ARIMA
--   Use script Sess3_1RegModelsTS_ARIMA.R in R directory
+-   First we'll use script Sess3_1RegModelsTS_ARIMA.R in R directory
+-   Then we'll look at Sess3_2IncomeEducation.Rmd
 
 # R4Economists Session 4
 
@@ -272,5 +274,10 @@ summary( EdAttainIncome )
 
 -   Build a simple (slightly) interactive dashboard
 -   Use Rmarkdown file Sess4_LoanOfficerSurvey.Rmd
--   Use Rmarkdown file Sess4_Kalecki
+-   Use Rmarkdown file Sess4_Kalecki.Rmd
 -   Look at more complex dashboards
+
+## References & citations
+
+-   from Wisconsin School of Business: <https://pubs.wsb.wisc.edu/academics/analytics-using-r-2019/>
+-   Dr Nick Huntington-Klein: [https://www.youtube.com/\@NickHuntingtonKlein](https://www.youtube.com/)

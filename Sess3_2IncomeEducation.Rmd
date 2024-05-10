@@ -52,30 +52,30 @@ Recursively because that is how FRED R client works. Print a summary of the resu
 
 startdate <- as.Date("2000-01-01")
 
-CodeMap <- data.frame("SeriesID"= c("LEU0252919100Q","LEU0252917300Q",	"LEU0252916700Q"),
-                      "SeriesName" = c("Bachelors degree","High School diploma only", "Less than High School Diploma"))
-
-# fetch the data from FRED
-# first series
-EdAttainIncome <- alfred::get_fred_series(CodeMap[1,1], series_name = CodeMap[1,2], observation_start = startdate)
-
-# then loop for other series, starting with second row
-for(srs in 2:nrow(CodeMap)) {
-  df <-
-    alfred::get_fred_series(CodeMap[srs, 1],
-                            series_name = CodeMap[srs, 2],
-                            observation_start = startdate)
-  EdAttainIncome <- cbind(EdAttainIncome, df[, 2])
-  colnames(EdAttainIncome)[srs + 1] <- CodeMap[srs, 2]
-}
-
-colnames(EdAttainIncome)[1] <- "Date"
+# CodeMap <- data.frame("SeriesID"= c("LEU0252919100Q","LEU0252917300Q",	"LEU0252916700Q"),
+#                       "SeriesName" = c("Bachelors degree","High School diploma only", "Less than High School Diploma"))
+# 
+# # fetch the data from FRED
+# # first series
+# EdAttainIncome <- alfred::get_fred_series(CodeMap[1,1], series_name = CodeMap[1,2], observation_start = startdate)
+# 
+# # then loop for other series, starting with second row
+# for(srs in 2:nrow(CodeMap)) {
+#   df <-
+#     alfred::get_fred_series(CodeMap[srs, 1],
+#                             series_name = CodeMap[srs, 2],
+#                             observation_start = startdate)
+#   EdAttainIncome <- cbind(EdAttainIncome, df[, 2])
+#   colnames(EdAttainIncome)[srs + 1] <- CodeMap[srs, 2]
+# }
+# 
+# colnames(EdAttainIncome)[1] <- "Date"
 
 
 
 
 # store the data locally
-EdAttainIncome <- readr::write_csv(EdAttainIncome,"Data/IncomeEducationalAttainment.csv")
+EdAttainIncome <- readr::read_csv("Data/IncomeEducationalAttainment.csv")
 ```
 
 ```{r include=TRUE}
@@ -127,17 +127,31 @@ Note that elements of ggplot can be amended, or added.
 ```{r}
 p_EdAttainLM <- ggplot(EdAttainIncome, aes(x = `Bachelors degree`, y = `Less than High School Diploma`)) + 
   geom_point() +
-  stat_smooth(method = "lm", col = "red")
+  stat_smooth(method = "lm", se = TRUE,col = "red")+
+  stat_smooth(method = 'loess', span = 0.2)
+
+# LOESS combines much of the simplicity of linear least squares regression with the flexibility of non-linear regression. It does this by fitting simple models to localized subsets of the data to build up a function that describes the deterministic part of the variation in the data, point by point.
 
 charttitle <- "Mapping Income: Bachelors degree to High School Diploma"
 chartcaption <- "Source: U.S. Bureau of Labor Statistics"
 p_EdAttainLM +  labs(title = charttitle,
                      caption = chartcaption) 
 
-p_EdAttainLM + labs(title = paste("Adj R2 = ",signif(summary(fit1)$adj.r.squared, 5),
-                     "Intercept =",signif(fit1$coef[[1]],5 ),
-                     " Slope =",signif(fit1$coef[[2]], 5),
-                     " P =",signif(summary(fit1)$coef[2,4], 5)))
+
+p_EdAttainLM + labs(
+  title = charttitle,
+  caption = chartcaption,
+  subtitle = paste(
+    "Adj R2 = ",
+    signif(summary(fit1)$adj.r.squared, 5),
+    "Intercept =",
+    signif(fit1$coef[[1]], 5),
+    " Slope =",
+    signif(fit1$coef[[2]], 5),
+    " P =",
+    signif(summary(fit1)$coef[2, 4], 5)
+  )
+)
 
 ```
 

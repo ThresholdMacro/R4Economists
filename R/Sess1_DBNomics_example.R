@@ -79,16 +79,27 @@ EU_M3 <- rdbnomics::rdb(provider_code = "ECB",dataset_code = "BSI", ids = "M.U2.
 # R has now included the pipe command into its base language
 # ----------------------------
 
+# one way to use the dplyr package
+# note the object (data) which is being manipulated is always the first parameter
+# this is a common feature of the tidyverse set of packages
+
+dplyr::select(EU_M3, period,value)
+dplyr::filter(EU_M3, period>startdate)
+
+# we can 'pipe' the data object and the results through different functions using "%>%" (tidyverse) or "|>" (native R)
+# this makes reading the code easier - 
+# for instance, the following chunk of code is relatively easy to read as:
+# "the new object "EU_M3sht' is created by taking the original "EU_M3' object, 
+# selecting period and value columns and only including data after (greater than) a startdate ("1999-01-01")
+
 EU_M3sht <-
   EU_M3 |>
-  dplyr::select(period, value)
-
-EU_M3sht <-
-  EU_M3sht |>
+  dplyr::select(period, value) |>
   dplyr::filter(period >= startdate)
 
-# all my data uses a column named 'Date' for dates, 
-# so it is helpful to change it so we can run functions used for other data on this
+# all time series functions I have created use a column named 'Date' for dates, 
+# this data uses 'period'
+# so it is helpful to change the name so we can run functions used for other data on this
 # also rename the value column to something more meaningful 
 colnames(EU_M3sht) <- c( "Date", "BroadMoney EZ M3")
 
