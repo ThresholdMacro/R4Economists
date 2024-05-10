@@ -3,9 +3,9 @@ title: "Sess4_LoanOfficerSurvey"
 author: "Meyrick Chapman"
 date: "`r Sys.Date()`"
 output:
-  html_document: default
-  word_document: default
   pdf_document: default
+  word_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -75,9 +75,11 @@ loantype <- c("Mortgages")
 
 Simple table data is easy to display using knitr::kable.
 
+If the output is to pdf, the format will need to be changed in kable
+
 In most cases, `knitr::kable(x)` may be enough if you only need a simple table for the data object `x`. The `format` argument is automatically set according to the **knitr** source document format. Its possible values are `pipe` (tables with columns separated by pipes), `simple` (Pandoc’s simple tables), `latex` (LaTeX tables), `html` (HTML tables), and `rst` (reStructuredText tables). For R Markdown documents, `kable()` uses the `pipe` format for tables by default, which looks like this:
 
-```{r table1, echo=FALSE}
+```{r table1, echo=TRUE}
 reduceddata <- tail(dat_csv[,c(1:7,14)])
 knitr::kable(reduceddata, format = 'html',caption = "Recent Senior Loan Officer Survey results" )
 ```
@@ -216,6 +218,9 @@ Here stargazer shows 2 model results:
 Neither has a high R<sup>2</sup> rate. 
 
 The ordered list items and the superscript 2 in R<sup>2</sup> use html tags. 
+
+
+If the output is to pdf, the format will need to be changed in stargazer
 
 
 ```{r lm1, echo=FALSE}

@@ -1,0 +1,276 @@
+---
+title: "R4Economists"
+subtitle: An Introduction
+author: Meyrick Chapman
+format:
+  revealjs: 
+    slide-number: true
+    chalkboard: 
+      buttons: false
+    preview-links: auto
+    theme: dark
+---
+
+## Course outline
+
+1.  Session 1: Basics - GitHub repo: <https://github.com/ThresholdMacro/R4Economists.git> - Basic Calculations and Data Types - Working with Data
+
+2.  Session 2: Exploratory Data Analysis (EDA) - Visualizing Economic Relationships
+
+3.  Session 3: Introduction to R for Economics - Linear models, fancy linear models, some tests for robust errors - Time series -ARIMA
+
+4.  Session 4: Build a (slightly) interactive dashboard - Look at more complex dashboards
+
+## Session 1
+
+Setting Up the R Environment, basic calculation, data
+
+-   You should already have: - Setup a Posit cloud account to create an on-line RStudio environment <https://posit.cloud/> . If you need help, this is very useful: <https://learnr-examples.shinyapps.io/ex-setup-r/> (available in my Git repo).
+
+-   Basic Calculations and Data Types: Perform arithmetic operations, assign variables, data types, datastructures.
+
+-   Working with Data: import data from CSV, Excel. Download data. Data Manipulation: subset data with dplyr (filtering, grouping),.
+
+## The environment
+
+-   RStudio
+    -   Environment, console, history, directory structure, help
+    -   Scripts
+    -   Projects
+    -   Packages
+-   Don't worry, you'll work it out
+
+## Download materials from GitHub
+
+-   Course materials are stored on GitHub.
+    -   In RStudio (online or local):
+        -   create a new project called ‘R4Economists’
+        -   Using ‘New Project from Git Repository’
+        -   When asked, insert this URL: <https://github.com/ThresholdMacro/R4Economists.git>
+        -   Create project called "R4Economists"
+
+## Basics
+
+-   Perform arithmetic operations
+    -   Assign variables
+    -   Basic arithmetic
+    -   Vector maths
+    -   Data types (e.g., numeric vectors for prices, character vectors for countries).
+
+## Basic maths in console
+
+```{r basicmaths, echo=TRUE}
+1+6
+x <- 1
+y <- 6
+x+y
+y^2
+```
+
+## Vector maths
+
+-   from Wisconsin School of Business: <https://pubs.wsb.wisc.edu/academics/analytics-using-r-2019/>
+-   One big advantage of R is in its ability to work with vectors.
+    -   ASSIGN a vector from 1-5. Add a constant to each element of the vector.
+    -   Multiply each element of a vector by a constant.
+    -   Add two vectors together that are the same length.
+    -   Multiply two vectors together of the same length.
+    -   Raise each element of a vector to a power (or other manipulation)
+
+## Vector maths in console
+
+```{r basic_calc, echo=TRUE}
+x <- 1:5
+2 + x
+2 * x
+
+x <- c(1, 3, 5)
+y <- c(2, 4, 6)
+x * y
+x^2
+
+```
+
+## Simple calcs: assign values, vectors
+
+-   The return from an interest rate over 2 periods. i =0.05 and t =2 .
+    -   accum holds the result of the calculation of 1+𝑖\*𝑡 for the values of i 𝑖 and t 𝑡.
+    -   Exponentiate the quantity (1+𝑖) to the 𝑡 th power.
+    -   Create a sequence for t & recalculate.
+    -   Create a dataframe.
+
+## Interest rate calculation in console
+
+```{r basiccompound, echo=TRUE}
+i  <-  0.05 
+t <-  2 
+accum  <-  1  +  i * t
+accum
+accum2 <- ( 1  +  i ) ^ t
+accum2
+t <-  seq ( from =  0 , to =  5 , by =  0.5 )
+accum3  <- ( 1  +  i ) ^ t 
+accum3
+accum4 <- data.frame ("Period" = t, "Data"=(1+i)^t)
+
+```
+
+## Create a function
+
+-   User-created functions add to inbuilt capabilities.
+    -   A function is assigned a name (simple), takes parameters ( ir , time), returns a result
+    -   A function will automatically return the last calculation. It is good practice to define what is returned
+    -   Let’s try it.
+
+## Write a function in console
+
+```{r writefunction, echo=TRUE}
+simple <-  function ( ir , time){
+1  +  ir * time
+}
+simple <-  function ( ir , time){
+srs <-( 1  +  ir ) ^ time 
+return( srs )
+}
+
+simple( i,t )
+```
+
+## 6 Basic data types
+
+1.  [double]{.underline} or [numeric]{.underline} (real or decimal) (2, 15.5)
+
+2.  [character]{.underline} ("a", "swc ”, “name”)
+
+3.  [integer]{.underline} (2L the L tells R to use this as an integer)
+
+4.  [logical]{.underline} (TRUE/FALSE)
+
+5.  [complex]{.underline} (complex numbers with real and imaginary parts)
+
+6.  [raw]{.underline} (not normally used in day-to-day usage, but may be important in messaging, piping, storage. Example, hex colours)
+
+## Data types in console
+
+```{r datatype, echo=TRUE}
+doub1 <- 3.333333
+class(doub1)
+char1 <- "character"
+class(char1)
+int1 <- -3L
+class(int1)
+```
+
+## Data types in console 2
+
+```{r datatype2, echo=TRUE}
+
+logical1 <- TRUE
+class(logical1)
+z = 1 + 2i
+class(z)
+raw1 <- charToRaw("#FFFF00")
+class(raw1)
+
+```
+
+## 5 Basic data structures
+
+1.  [atomic vector]{.underline} (a collection of data in single row (or column) of one type of data).
+
+2.  [list]{.underline} (a vector of objects, can contain multiple types of data).
+
+3.  [matrix]{.underline} (a vector with more than two dimensions).
+
+4.  [dataframe]{.underline} (a matrix with special/useful characteristics. The de facto data structure for most tabular data ).
+
+5.  [factor]{.underline} ( used to represent categorical data. Factors can be ordered or unordered and are an important class for statistical analysis and for plotting). All data structures have dimensions, names, types, contents.
+
+## Data structures in console
+
+```{r datastructures, echo=TRUE}
+list(1:5)
+
+matrix(c(1, 2, 3, 4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE)
+```
+
+## More data structures in console
+
+```{r datastructures2, echo=TRUE}
+# We already created a dataframe named accum4 (see Environment)
+accum4
+
+fact1 <- factor(c("single", "married", "married", "single"))
+fact1
+
+
+```
+
+## Working with data
+
+-   Importing .csv and .xlsx files
+    -   EdAttainIncome \<- readr :: read_csv ("Data/ IncomeEducationalAttainment.csv ")
+    -   PBoCBS \<- readxl :: read_excel ("Data/ PBoCBS.xlsx ")
+    -   Let’s look at the data.
+    -   tail( EdAttainIncome, n=2) - the last 2 lines. Can also use head() to look at beginning of data
+    -   summary( EdAttainIncome )
+
+## Working with data in the console
+
+```{r workwithdata, echo=TRUE}
+EdAttainIncome <- readr :: read_csv ("Data/IncomeEducationalAttainment.csv", show_col_types = FALSE)
+PBoCBS <- readxl :: read_excel ("Data/PBoCBS.xlsx")
+```
+
+## More working with data in the console
+
+```{r workingwithdata2, echo=TRUE}
+tail( EdAttainIncome, n=2)
+summary( EdAttainIncome )
+
+```
+
+## Data from internet (db.nomics database)
+
+-   d b.nomics.world is a great source of global economic data from numerous providers, delivered in a standard (or nearly standard) format. This makes it very useful.
+-   Use script Sess1_DBNomics_example.R in R directory
+
+## Data manipulation
+
+-   The same script shows basic examples of data manipulation
+    -   dplyr is a powerful manipulation package for R, part of the tidyverse suite.
+    -   lubridate is also part of the tidyverse suite, working with dates
+    -   Also introduces user-defined functions and plot formatting
+    -   Not so basic.
+
+# R4Economists Session 2
+
+## Exploratory Data Analysis
+
+-   Look at the data, explore the structure of the data
+    -   Visualise and analysing the data
+    -   Identification of missing values
+-   Measure the central tendency
+-   Visualize the shape of the distribution
+-   Explore the spread using Visualization plots
+-   Explore relationship between features; correlation, visualization using scatter plot
+-   Use script Sess2_EDA.R in R directory
+
+# R4Economists Session 3
+
+## Introduction to R for Economics
+
+-   Most examples taken from Dr Nick Huntington-Klein: [https://www.youtube.com/\@NickHuntingtonKlein](https://www.youtube.com/)
+-   Linear models, fancy linear models, some tests for robust errors
+-   Time series
+-   ARIMA
+-   Use script Sess3_1RegModelsTS_ARIMA.R in R directory
+
+# R4Economists Session 4
+
+## Putting it together.
+
+-   Build a simple (slightly) interactive dashboard
+-   Use Rmarkdown file Sess4_LoanOfficerSurvey.Rmd
+-   Use Rmarkdown file Sess4_Kalecki
+-   Look at more complex dashboards

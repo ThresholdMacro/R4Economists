@@ -41,7 +41,6 @@ AER)#AER is for linearHypothesis
 ## load up our functions into memory
 # source("~/Library/Mobile Documents/com~apple~CloudDocs/Meyrick/R/Libs/HAgraphics/R/ggstdplots.R")
 
-
 ## ---------------------------
 
 #Read in Wooldridge data
@@ -106,6 +105,11 @@ stargazer::stargazer(model3,coeftest(model3,vcovHC),type='text')
 # vcovCL = "Clustered Covariance Matrix Estimation"
 ClustSE <- lmtest::coeftest(model3,vcovCL,cluster=wage1$smsa)
 stargazer::stargazer(model3,RobSE,ClustSE,type='text')
+
+# WARNING: robust standard error functions may contain default settings which differ from package to package
+# and between computer languages. Results may therefore be dependent on assumptions not visible to the user
+# See: https://stackoverflow.com/questions/65435476/why-panelols-in-python-has-different-result-than-plm-in-r
+
 
 #Breusch-Pagan test for Heteroskedasticity 
 lmtest::bptest(model3)
@@ -176,8 +180,7 @@ forecast::seasonplot(industry)
 # ---------------------------------------
 # ARIMA models
 
-
-#Bring in China data and get industry time series from it
+#Bring in China data and get a time series from it
 data(ChinaIncome)
 transport <- ChinaIncome[,5]
 
