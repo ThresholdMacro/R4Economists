@@ -124,7 +124,7 @@ hchartHA <- function(lngdata, mktname, citation, yaxistitle) {
   return(hc)
 }
 
-hchartHAhist <- function(lngdata, ctitle,upperCI) {
+hchartHAhist <- function(lngdata, ctitle,upperCI, citation) {
   
    
   hc <-
@@ -136,6 +136,9 @@ hchartHAhist <- function(lngdata, ctitle,upperCI) {
       name = ctitle,
       tooltip = list(pointFormat = "{series.name}: {point.y:.2f}")
     ) |>
+    hc_title(
+      text = ctitle,
+      align = "left")|>
     hc_xAxis(title = list(text = "Months lead/lag")) |>
     hc_yAxis(
       title = list(text = "Correlation by month lead (-) or lag (+)"),
@@ -145,7 +148,7 @@ hchartHAhist <- function(lngdata, ctitle,upperCI) {
                        list(value = -upperCI, color = "lightblue", width = 1.5,
                             dashStyle = "shortdash"))) |>
     hc_add_theme(my_hc_theme) |>
-    hc_caption(text = "Source: HedgeAnalytics") 
+    hc_caption(text = citation) 
   
   return(hc)
 }

@@ -36,16 +36,22 @@ Inputs {.sidebar data-width=300 bg="#1e3142"}
 source("R/dashboard_functions.R")
 
 ## - input data here 
-Kaleckidata <- readr::read_csv("Data/Kaleckidata.csv")
-KaleckiPctGDP <- readr::read_csv("Data/KaleckiPctGDP.csv")
-colnames(KaleckiPctGDP) <- gsub("\\."," ", names(KaleckiPctGDP))
+inputdf1 <- readr::read_csv("Data/Kaleckidata.csv")
+#  citations: 
+citation <- "Source: Bureau of Economic Analysis, FRED"
+# series names
+srstitle <- "Kalecki identities"
 
-K_identities <- names(KaleckiPctGDP[,-1])
+
+modifiedinputdf <- data.frame("Date"= inputdf1$Date,inputdf1[,-1]/inputdf1$`Nominal GDP`)
+colnames(modifiedinputdf) <- gsub("\\."," ", names(modifiedinputdf))
+
+colsSelected <- names(modifiedinputdf[,-1])
 
 selectizeInput(
-    inputId = "Kalecki_ids",
-    label= "Choose identities to visualize",
-    choices = K_identities,
+    inputId = "col_ids",
+    label= "Choose series to visualize",
+    choices = colsSelected,
     selected = c(
       "Net Govt Saving",
       "Foreign Saving",
@@ -61,8 +67,8 @@ corrtxt <- htmltools::HTML("Correlations: months lead(-)/lag(+)<br>Choose 2 seri
 selectizeInput(
     inputId = "cor",
     label= corrtxt,
-    choices = c(K_identities),
-    selected = c(K_identities[c(7,6)]),
+    choices = c(colsSelected),
+    selected = c(colsSelected[c(7,6)]),
     multiple = TRUE,
     options = list(maxItems = 2)
   )
@@ -87,8 +93,8 @@ Model:
 selectizeInput(
     inputId = "dep_variables",
     label= "Model: dependent variables",
-    choices = c(K_identities),
-    selected = c(K_identities[7]),
+    choices = c(colsSelected),
+    selected = c(colsSelected[7]),
     multiple = FALSE,
     options = list(maxItems = 1)
   )
@@ -96,8 +102,8 @@ selectizeInput(
 selectizeInput(
     inputId = "ind_variables",
     label= "Model: independent variables",
-    choices = c(K_identities),
-    selected = c(K_identities[c(6,2,3)]),
+    choices = c(colsSelected),
+    selected = c(colsSelected[c(6,2,3)]),
     multiple = TRUE,
     options = list(maxItems = 6)
   )
@@ -115,8 +121,8 @@ ind_var <- reactive({input$ind_variables})
 dataSelected <- reactive({
 
  alldata <-
-   Kaleckidata |>
-   select(Date, all_of(input$Kalecki_ids)) |>
+   inputdf1 |>
+   select(Date, all_of(input$col_ids)) |>
    dplyr::filter(Date > input$daterange[1])
 
   return(alldata)
@@ -126,8 +132,8 @@ dataSelected <- reactive({
 dataPctSelected <- reactive({
   
  alldata <-
-   KaleckiPctGDP |>
-   select(Date, all_of(input$Kalecki_ids)) |>
+   modifiedinputdf |>
+   select(Date, all_of(input$col_ids)) |>
    dplyr::filter(Date > input$daterange[1])
 
   return(alldata)
@@ -141,7 +147,7 @@ model.cor <- reactive({
   ind_var <- input$ind_variables
 
   alldata <-
-    KaleckiPctGDP |>
+    modifiedinputdf |>
     dplyr::filter(Date > dates[1] &
                     Date < dates[2]) |>
     dplyr::select(all_of(dep_var), all_of(ind_var))
@@ -174,8 +180,8 @@ renderHighchart({
 # # # any further data wrangling
 
     lngdata <- lngdf(alldata)
-    citation <- 'Source: Bureau of Economic Analysis, FRED'
-    titletxt <- "Selected Kalecki identities: USD bln"
+    citation <- citation
+    titletxt <- paste0("Selected ", srstitle,": USD bln")
     yaxistitle <- "USD blns"
    
 # # #plot the result
@@ -196,17 +202,19 @@ renderHighchart({
    dates <- dates()
      
    alldata <-
-    KaleckiPctGDP |>
+    modifiedinputdf |>
      dplyr::filter(Date > dates[1] & Date < dates[2]) |>
      dplyr::select(all_of(input$cor))
    
+   
     cor <- ccf(alldata[,1], alldata[,2], lag.max = 20, na.action = na.pass, plot = FALSE)
+    citation <- citation
     ctitle <- paste0("Correlation: ",names(alldata[1])," vs ",names(alldata[2]))
     cordf <- data.frame("X"=cor$lag,"Y"=cor$acf*100)
     upperCI <- qnorm((1 + 0.95)/2)/sqrt(cor$n.used)*100
  
 # plot the result 
-  hchartHAhist(cordf,ctitle,upperCI)
+  hchartHAhist(cordf,ctitle,upperCI, citation)
   
 })
 
@@ -222,15 +230,13 @@ renderHighchart({
 # # map the global reactive variables to use within this render statement
 
   alldata <- dataPctSelected()
-   # KaleckiPctGDP |>
-   # select(Date, input$Kalecki_ids) |>
-   # dplyr::filter(Date > input$daterange[1])
+   
 
 # # # any further data wrangling
 
     lngdata <- lngdf(alldata)
-    citation <- 'Source: Bureau of Economic Analysis, FRED'
-    titletxt <- "Selected Kalecki identities: % of GDP"
+    citation <- citation
+    titletxt <- paste0("Selected ", srstitle,": % of GDP")
     yaxistitle <- "Pct of GDP"
    
 # # #plot the result
@@ -252,7 +258,7 @@ renderHighchart({
   
   modeldata <-
     data.frame("Date" = tail(
-      KaleckiPctGDP$Date,
+      modifiedinputdf$Date,
       length(model.cor$model[,1])
     ))
   
@@ -277,7 +283,7 @@ renderHighchart({
       model_ind_vars
     )
 
-    citation <- 'Source: Bureau of Economic Analysis, FRED'
+    citation <- citation
     yaxistitle <- "Pct of GDP"
   
   hc <- hchartHA(lngmodel,  mktname, citation, yaxistitle)
