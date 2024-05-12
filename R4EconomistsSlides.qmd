@@ -59,7 +59,7 @@ Setting Up the R Environment, basic calculation, data
     -   Vector maths
     -   Data types (e.g., numeric vectors for prices, character vectors for countries).
 
-## Basic maths in console
+## Basic arithmetic in console
 
 ```{r basicmaths, echo=TRUE}
 1+6
@@ -126,12 +126,9 @@ accum4 <- data.frame ("Period" = t, "Data"=(1+i)^t)
 ## Write a function in console
 
 ```{r writefunction, echo=TRUE}
-simple <-  function ( ir , time){
-1  +  ir * time
-}
-simple <-  function ( ir , time){
-srs <-( 1  +  ir ) ^ time 
-return( srs )
+simple <-  function (ir , time) {
+    srs <- (1  +  ir) ^ time
+    return(srs)
 }
 
 simple( i,t )
@@ -156,8 +153,10 @@ simple( i,t )
 ```{r datatype, echo=TRUE}
 doub1 <- 3.333333
 class(doub1)
+
 char1 <- "character"
 class(char1)
+
 int1 <- -3L
 class(int1)
 ```
@@ -168,8 +167,11 @@ class(int1)
 
 logical1 <- TRUE
 class(logical1)
+
 z = 1 + 2i
+# i = sqrt(-1) = imaginary number
 class(z)
+
 raw1 <- charToRaw("#FFFF00")
 class(raw1)
 

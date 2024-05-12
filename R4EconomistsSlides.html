@@ -464,8 +464,8 @@ Meyrick Chapman
 </ul></li>
 </ul>
 </section>
-<section id="basic-maths-in-console" class="slide level2">
-<h2>Basic maths in console</h2>
+<section id="basic-arithmetic-in-console" class="slide level2">
+<h2>Basic arithmetic in console</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="dv">1</span><span class="sc">+</span><span class="dv">6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -571,15 +571,12 @@ Meyrick Chapman
 <section id="write-a-function-in-console" class="slide level2">
 <h2>Write a function in console</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href=""></a>simple <span class="ot">&lt;-</span>  <span class="cf">function</span> ( ir , time){</span>
-<span id="cb22-2"><a href=""></a><span class="dv">1</span>  <span class="sc">+</span>  ir <span class="sc">*</span> time</span>
-<span id="cb22-3"><a href=""></a>}</span>
-<span id="cb22-4"><a href=""></a>simple <span class="ot">&lt;-</span>  <span class="cf">function</span> ( ir , time){</span>
-<span id="cb22-5"><a href=""></a>srs <span class="ot">&lt;-</span>( <span class="dv">1</span>  <span class="sc">+</span>  ir ) <span class="sc">^</span> time </span>
-<span id="cb22-6"><a href=""></a><span class="fu">return</span>( srs )</span>
-<span id="cb22-7"><a href=""></a>}</span>
-<span id="cb22-8"><a href=""></a></span>
-<span id="cb22-9"><a href=""></a><span class="fu">simple</span>( i,t )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href=""></a>simple <span class="ot">&lt;-</span>  <span class="cf">function</span> (ir , time) {</span>
+<span id="cb22-2"><a href=""></a>    srs <span class="ot">&lt;-</span> (<span class="dv">1</span>  <span class="sc">+</span>  ir) <span class="sc">^</span> time</span>
+<span id="cb22-3"><a href=""></a>    <span class="fu">return</span>(srs)</span>
+<span id="cb22-4"><a href=""></a>}</span>
+<span id="cb22-5"><a href=""></a></span>
+<span id="cb22-6"><a href=""></a><span class="fu">simple</span>( i,t )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] 1.000000 1.024695 1.050000 1.075930 1.102500 1.129726 1.157625 1.186213
  [9] 1.215506 1.245523 1.276282</code></pre>
@@ -626,7 +623,8 @@ Meyrick Chapman
 <pre><code>[1] "logical"</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href=""></a>z <span class="ot">=</span> <span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span>i</span>
-<span id="cb32-2"><a href=""></a><span class="fu">class</span>(z)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb32-2"><a href=""></a><span class="co"># i = sqrt(-1) = imaginary number</span></span>
+<span id="cb32-3"><a href=""></a><span class="fu">class</span>(z)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "complex"</code></pre>
 </div>
