@@ -22,7 +22,7 @@ options(scipen = 6, digits = 4) # I prefer to view outputs in non-scientific not
 
 ## ---------------------------
 
-## load up the packages we will need:  (uncomment as required)
+## load up the packages we will need: 
 if(!require("pacman")) install.packages("pacman")
 pacman::p_load(plyr,
 zoo,
@@ -90,7 +90,7 @@ dplyr::filter(EU_M3, period>startdate)
 # this makes reading the code easier - 
 # for instance, the following chunk of code is relatively easy to read as:
 # "the new object "EU_M3sht' is created by taking the original "EU_M3' object, 
-# selecting period and value columns and only including data after (greater than) a startdate ("1999-01-01")
+# selecting period and value columns and only including data after (greater than) startdate ("1999-01-01")
 
 EU_M3sht <-
   EU_M3 |>
@@ -107,6 +107,20 @@ colnames(EU_M3sht) <- c( "Date", "BroadMoney EZ M3")
 EU_M3sht$Date <- lubridate::ceiling_date(EU_M3sht$Date, unit = 'months')-1
 EU_M3sht$`BroadMoney EZ M3` <- EU_M3sht$`BroadMoney EZ M3`/1000
 
+
+# ----------------------------
+# plotting the data
+
+# ----------------------------
+# plot the result - base R graphics
+# ----------------------------
+
+plot(EU_M3sht$Date,
+     EU_M3sht$`BroadMoney EZ M3`,
+     type = 'l',
+     main = "Eurozone M3 since 1999, level, EUR bln")
+
+
 # ----------------------------
 # tidyr function to arrange data into a format used by ggplot2
 # ----------------------------
@@ -120,14 +134,6 @@ lngEU_M3 <-
 lngEU_M3 <-
   lngdf(EU_M3sht)
 
-# ----------------------------
-# plot the result - base R graphics
-# ----------------------------
-
-plot(EU_M3sht$Date,
-     EU_M3sht$`BroadMoney EZ M3`,
-     type = 'l',
-     main = "Eurozone M3 since 1999, level, EUR bln")
 
 # ----------------------------
 # plot the result - ggplot2

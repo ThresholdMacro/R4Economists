@@ -29,22 +29,13 @@ format:
 
 Setting Up the R Environment, basic calculation, data
 
--   You should already have: - setup a Posit cloud account to create an on-line RStudio environment <https://posit.cloud/> .
+-   You should already have a Posit cloud account to create an on-line RStudio environment <https://posit.cloud/> .
 
 -   If you need help for local setup, this is very useful: <https://learnr-examples.shinyapps.io/ex-setup-r/> (available in my Git repo).
 
 -   Basic Calculations and Data Types: Perform arithmetic operations, assign variables, data types, datastructures.
 
 -   Working with Data: import data from CSV, Excel. Download data. Data Manipulation: subset data with dplyr (filtering, grouping).
-
-## The environment
-
--   RStudio
-    -   Environment, console, history, directory structure, help
-    -   Scripts
-    -   Projects
-    -   Packages
--   Don't worry, you'll work it out
 
 ## Download materials from GitHub
 
@@ -55,6 +46,15 @@ Setting Up the R Environment, basic calculation, data
         -   When asked, insert this URL: <https://github.com/ThresholdMacro/R4Economists.git>
         -   Create project called "R4Economists"
 
+## The environment
+
+-   RStudio
+    -   Environment, console, history, directory structure, help
+    -   Scripts
+    -   Projects
+    -   Packages
+-   Don't worry, you'll work it out
+
 ## Basics
 
 -   Perform arithmetic operations
@@ -62,6 +62,7 @@ Setting Up the R Environment, basic calculation, data
     -   Basic arithmetic
     -   Vector maths
     -   Data types (e.g., numeric vectors for prices, character vectors for countries).
+    -   Data structures (lists, matrices, dataframes, factors).
 
 ## Basic arithmetic in console
 
@@ -158,7 +159,7 @@ simple( i,t )
 doub1 <- 3.333333
 class(doub1)
 
-char1 <- "character"
+char1 <- "R4Economists"
 class(char1)
 
 int1 <- -3L
@@ -172,7 +173,7 @@ class(int1)
 logical1 <- TRUE
 class(logical1)
 
-z = 1 + 2i
+z <- 1 + 2i
 # i = sqrt(-1) = imaginary number
 class(z)
 
@@ -218,8 +219,8 @@ fact1
 ## Working with data
 
 -   Importing .csv and .xlsx files
-    -   EdAttainIncome \<- readr :: read_csv ("Data/ IncomeEducationalAttainment.csv ")
-    -   PBoCBS \<- readxl :: read_excel ("Data/ PBoCBS.xlsx ")
+    -   EdAttainIncome \<- readr::read_csv ("Data/ IncomeEducationalAttainment.csv ")
+    -   PBoCBS \<- readxl::read_excel ("Data/ PBoCBS.xlsx ")
     -   Let’s look at the data.
     -   tail( EdAttainIncome, n=2) - the last 2 lines. Can also use head() to look at beginning of data
     -   summary( EdAttainIncome )

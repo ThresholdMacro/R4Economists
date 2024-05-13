@@ -418,23 +418,10 @@ Meyrick Chapman
 <h2>Session 1</h2>
 <p>Setting Up the R Environment, basic calculation, data</p>
 <ul>
-<li><p>You should already have: - setup a Posit cloud account to create an on-line RStudio environment <a href="https://posit.cloud/" class="uri">https://posit.cloud/</a> .</p></li>
+<li><p>You should already have a Posit cloud account to create an on-line RStudio environment <a href="https://posit.cloud/" class="uri">https://posit.cloud/</a> .</p></li>
 <li><p>If you need help for local setup, this is very useful: <a href="https://learnr-examples.shinyapps.io/ex-setup-r/" class="uri">https://learnr-examples.shinyapps.io/ex-setup-r/</a> (available in my Git repo).</p></li>
 <li><p>Basic Calculations and Data Types: Perform arithmetic operations, assign variables, data types, datastructures.</p></li>
 <li><p>Working with Data: import data from CSV, Excel. Download data. Data Manipulation: subset data with dplyr (filtering, grouping).</p></li>
-</ul>
-</section>
-<section id="the-environment" class="slide level2">
-<h2>The environment</h2>
-<ul>
-<li>RStudio
-<ul>
-<li>Environment, console, history, directory structure, help</li>
-<li>Scripts</li>
-<li>Projects</li>
-<li>Packages</li>
-</ul></li>
-<li>Don’t worry, you’ll work it out</li>
 </ul>
 </section>
 <section id="download-materials-from-github" class="slide level2">
@@ -452,6 +439,19 @@ Meyrick Chapman
 </ul></li>
 </ul>
 </section>
+<section id="the-environment" class="slide level2">
+<h2>The environment</h2>
+<ul>
+<li>RStudio
+<ul>
+<li>Environment, console, history, directory structure, help</li>
+<li>Scripts</li>
+<li>Projects</li>
+<li>Packages</li>
+</ul></li>
+<li>Don’t worry, you’ll work it out</li>
+</ul>
+</section>
 <section id="basics" class="slide level2">
 <h2>Basics</h2>
 <ul>
@@ -461,6 +461,7 @@ Meyrick Chapman
 <li>Basic arithmetic</li>
 <li>Vector maths</li>
 <li>Data types (e.g., numeric vectors for prices, character vectors for countries).</li>
+<li>Data structures (lists, matrices, dataframes, factors).</li>
 </ul></li>
 </ul>
 </section>
@@ -602,7 +603,7 @@ Meyrick Chapman
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "numeric"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a>char1 <span class="ot">&lt;-</span> <span class="st">"character"</span></span>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a>char1 <span class="ot">&lt;-</span> <span class="st">"R4Economists"</span></span>
 <span id="cb26-2"><a href=""></a><span class="fu">class</span>(char1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "character"</code></pre>
@@ -622,7 +623,7 @@ Meyrick Chapman
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "logical"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href=""></a>z <span class="ot">=</span> <span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span>i</span>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href=""></a>z <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span>i</span>
 <span id="cb32-2"><a href=""></a><span class="co"># i = sqrt(-1) = imaginary number</span></span>
 <span id="cb32-3"><a href=""></a><span class="fu">class</span>(z)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -694,8 +695,8 @@ Levels: married single</code></pre>
 <ul>
 <li>Importing .csv and .xlsx files
 <ul>
-<li>EdAttainIncome &lt;- readr :: read_csv (“Data/ IncomeEducationalAttainment.csv”)</li>
-<li>PBoCBS &lt;- readxl :: read_excel (“Data/ PBoCBS.xlsx”)</li>
+<li>EdAttainIncome &lt;- readr::read_csv (“Data/ IncomeEducationalAttainment.csv”)</li>
+<li>PBoCBS &lt;- readxl::read_excel (“Data/ PBoCBS.xlsx”)</li>
 <li>Let’s look at the data.</li>
 <li>tail( EdAttainIncome, n=2) - the last 2 lines. Can also use head() to look at beginning of data</li>
 <li>summary( EdAttainIncome )</li>
