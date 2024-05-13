@@ -13,7 +13,6 @@ format:
     reveal_options:
       menu:
         numbers: true
-    code_folding: show
 ---
 
 ## Course outline
@@ -192,7 +191,9 @@ class(raw1)
 
 4.  [dataframe]{.underline} (a matrix with special/useful characteristics. The de facto data structure for most tabular data ).
 
-5.  [factor]{.underline} ( used to represent categorical data. Factors can be ordered or unordered and are an important class for statistical analysis and for plotting). All data structures have dimensions, names, types, contents.
+5.  [factor]{.underline} ( used to represent categorical data. Factors can be ordered or unordered and are an important class for statistical analysis and for plotting).
+
+    ***All data structures have dimensions, names, types, contents.***
 
 ## Data structures in console
 
