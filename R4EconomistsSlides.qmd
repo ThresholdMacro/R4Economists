@@ -41,7 +41,7 @@ Setting Up the R Environment, basic calculation, data
 
 -   Course materials are stored on GitHub.
     -   In RStudio (online or local):
-        -   create a new project
+        -   create a New Project
         -   Using ‘New Project from Git Repository’
         -   When asked, insert this URL: <https://github.com/ThresholdMacro/R4Economists.git>
 
