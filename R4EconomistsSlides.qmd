@@ -1,7 +1,7 @@
 ---
 title: "R4Economists"
 subtitle: An Introduction
-author: Meyrick Chapman
+author: Meyrick Chapman 
 format:
   revealjs: 
     slide-number: true
@@ -9,6 +9,10 @@ format:
       buttons: false
     preview-links: auto
     theme: dark
+    footer: "HedgeAnalytics - www.hedge-analytics.com"
+    reveal_options:
+      menu:
+        numbers: true
 ---
 
 ## Course outline
