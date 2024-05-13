@@ -259,7 +259,7 @@ summary( EdAttainIncome )
 
 -   Look at the data, explore the structure of the data
     -   Visualise and analysing the data
-    -   Identification of missing values
+    -   Missing values and some suggestions of what to do about them.
 -   Measure the central tendency
 -   Visualize the shape of the distribution
 -   Explore the spread using Visualization plots
