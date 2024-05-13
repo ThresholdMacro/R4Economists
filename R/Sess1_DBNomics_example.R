@@ -50,13 +50,13 @@ startdate <- as.Date("1999-01-01")
 
 #  ---------------------------
 # Using data from the internet is essential
-# A very good economic database to become familiar with is db.nomics.world.
+# db.nomics.world. is a very good economic database to become familiar with.  
 # URL: https://db.nomics.world/
 # It is so useful because:
 # a) it collects huge amounts of data from a very large set of providers worldwide (IMF, Eurostat, ONS, WorldBank)
 # b) it arranges all these different data into a common format
 # this means you can work with data from multiple sources much more easily using the same routines
-# There are other similar databases. 
+# There are other very useful databases. 
 # FRED (Federal Reserve Economic Database) hosted by St Louis Federal Reserve is very useful
 # FRED needs its own API functions in the packages alfredr and fredr
 # You need an API key for FRED. This is free and allows for recursive/multiple calls to the database. 
@@ -64,7 +64,7 @@ startdate <- as.Date("1999-01-01")
 # ----------------------------
 # get the data from db.nomics.world
 # this is the link to the data we are going to get on their website:
-# https://db.nomics.world/Eurostat/prc_hicp_fp?q=M.RCH_A.CP00..
+# https://db.nomics.world/ECB/BSI?q=M.U2.N.V.M30.X.1.U2.2300.Z01.E
 # 
 # ----------------------------
 
@@ -118,21 +118,17 @@ EU_M3sht$`BroadMoney EZ M3` <- EU_M3sht$`BroadMoney EZ M3`/1000
 plot(EU_M3sht$Date,
      EU_M3sht$`BroadMoney EZ M3`,
      type = 'l',
-     main = "Eurozone M3 since 1999, level, EUR bln")
+     main = "Eurozone M3 since 1999, level, EUR bln",
+     xlab = 'Date',
+     ylab = 'EUR bln')
 
 
 # ----------------------------
-# tidyr function to arrange data into a format used by ggplot2
+# tidyr function to arrange data into long format used by ggplot2
 # ----------------------------
 lngEU_M3 <-
   EU_M3sht |>
   tidyr::pivot_longer(c(-Date),names_to = 'key', values_to = 'value')
-
-# ----------------------------
-# user defined function to arrange data - same output
-# ----------------------------
-lngEU_M3 <-
-  lngdf(EU_M3sht)
 
 
 # ----------------------------

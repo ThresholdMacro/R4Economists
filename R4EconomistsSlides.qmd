@@ -46,8 +46,6 @@ Setting Up the R Environment, basic calculation, data
 
 -   Working with Data: import data from CSV, Excel. Download data. Data Manipulation: subset data with dplyr (filtering, grouping).
 
-## 
-
 ## The environment
 
 -   RStudio
@@ -158,8 +156,8 @@ simple( i,t )
 ## Data types in console
 
 ```{r datatype, echo=TRUE}
-doub1 <- 3.333333
-class(doub1)
+dbl1 <- 3.333333
+class(dbl1)
 
 char1 <- "R4Economists"
 class(char1)

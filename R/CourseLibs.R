@@ -24,7 +24,8 @@ options(scipen = 6, digits = 4) # I prefer to view outputs in non-scientific not
 
 ## load up the packages we will need:  (uncomment as required)
 if(!require("pacman")) install.packages("pacman")
-pacman::p_load(tidyverse,
+pacman::p_load(plyr,
+tidyverse,
 ggthemes,
 sysfonts,
 showtext,
@@ -50,7 +51,8 @@ fredr,
 flexdashboard,
 shiny,
 shinyWidgets,
-bslib)
+bslib,
+reshape)
 
 # source("functions/packages.R")       # loads up all the packages we need
 
