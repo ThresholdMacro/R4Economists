@@ -25,6 +25,15 @@ format:
 
 4.  Session 4: Build a (slightly) interactive dashboard - Take a look at more complex dashboards
 
+## Download materials from GitHub
+
+-   Course materials are stored on GitHub.
+    -   In RStudio (online or local):
+        -   create a New Project
+        -   Using ‘New Project from Git Repository’
+        -   When asked, insert this URL: <https://github.com/ThresholdMacro/R4Economists.git>
+        -   Load the course libraries using CourseLibs.R
+
 ## Session 1
 
 Setting Up the R Environment, basic calculation, data
@@ -37,13 +46,7 @@ Setting Up the R Environment, basic calculation, data
 
 -   Working with Data: import data from CSV, Excel. Download data. Data Manipulation: subset data with dplyr (filtering, grouping).
 
-## Download materials from GitHub
-
--   Course materials are stored on GitHub.
-    -   In RStudio (online or local):
-        -   create a New Project
-        -   Using ‘New Project from Git Repository’
-        -   When asked, insert this URL: <https://github.com/ThresholdMacro/R4Economists.git>
+## 
 
 ## The environment
 
