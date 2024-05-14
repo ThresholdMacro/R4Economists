@@ -257,6 +257,12 @@ skewness(EZ_HICPwideNoNA$Germany)
 # histograms are useful
 # simple
 hist(EZ_HICPwideNoNA$Germany)
+# simple with a bit more detail
+hist(EZ_HICPwideNoNA$Germany, breaks = seq(
+  from = min(EZ_HICPwideNoNA$Germany),
+  to = max(EZ_HICPwideNoNA$Germany),
+  by = 0.2
+))
 
 # less simple, but multiple histograms on same page
 # notice we're using an earlier long dataset (selectHICP) for ggplot
