@@ -1,11 +1,11 @@
 ---
-title: "Sess4_LoanOfficerSurvey"
+title: "Sess3_LoanOfficerSurvey"
 author: "Meyrick Chapman"
 date: "`r Sys.Date()`"
 output:
+  html_document: default
   pdf_document: default
   word_document: default
-  html_document: default
 ---
 
 ```{r setup, include=FALSE}
