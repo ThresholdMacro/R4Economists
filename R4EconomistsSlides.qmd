@@ -270,19 +270,19 @@ summary( EdAttainIncome )
 
 ## Introduction to R for Economics
 
+-   Use Rmarkdown file Sess3_LoanOfficerSurvey.Rmd
+-   Then we'll look at Sess3_2IncomeEducation.Rmd
 -   Examples from Dr Nick Huntington-Klein: [https://www.youtube.com/\@NickHuntingtonKlein](https://www.youtube.com/)
 -   Linear models, fancy linear models, some tests for robust errors
 -   Time series
 -   ARIMA
--   First we'll use script Sess3_1RegModelsTS_ARIMA.R in R directory
--   Then we'll look at Sess3_2IncomeEducation.Rmd
+-   Sess3_1RegModelsTS_ARIMA.R in R directory
 
 # R4Economists Session 4
 
 ## Putting it together.
 
 -   Build a simple (slightly) interactive dashboard
--   Use Rmarkdown file Sess4_LoanOfficerSurvey.Rmd
 -   Use Rmarkdown file Sess4_Kalecki.Rmd
 -   Look at more complex dashboards
 
