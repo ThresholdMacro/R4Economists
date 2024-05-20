@@ -61,7 +61,17 @@ EZ_HICP <- rdbnomics::rdb(provider_code = "Eurostat",dataset_code = "prc_hicp_ma
 View(EZ_HICP)
 
 # ----------------------------
-# use dplyr & lubridate to have the data we need
+# use dplyr & lubridate to select the data we need from the longer dataset
+# ----------------------------
+
+EZ_HICPsht <-
+  dplyr::select(EZ_HICP,period,`Geopolitical entity (reporting)`, value)
+  
+EZ_HICPsht <-
+dplyr::filter(EZ_HICPsht, period>=as.Date(startdate))
+
+# ----------------------------
+# use dplyr & lubridate to get the data, but in a shorter syntax using the pipe function ("|>")
 # ----------------------------
 
 EZ_HICPsht <-
@@ -73,7 +83,7 @@ colnames(EZ_HICPsht) <- c( "Date", "Country","value")
 EZ_HICPsht$Date <- lubridate::ceiling_date(EZ_HICPsht$Date, unit = 'months')-1
 
 # ----------------------------
-# built-in tidyr function to arrange data 
+# built-in tidyr function to arrange data into a 'wide' format, which makes it easier to read for humans
 # ----------------------------
 EZ_HICPwide <-
   EZ_HICPsht |>
@@ -136,19 +146,38 @@ legend(
 )
 
 # there are ways to prettify this base graphic
-# but there are also other ways, which are flexible
 # choose the subset of column names as a vector to use in future functions
 # ----------------------------
 
 srs_chosen <- c('Germany','France','Italy','Spain')
 
-# convert to time series object - using our vector of column names
+# how to use the vector of column names
 # ----------------------------
-ts_EZ_HICP <- xts::xts(EZ_HICPwide[,srs_chosen], order.by=as.Date(EZ_HICPwide$Date))
-plot.xts(ts_EZ_HICP, auto.legend = TRUE, main = 'Headline HICP: major EZ countries')
+View(EZ_HICPwide[,srs_chosen])
 
-xts::addLegend(legend.loc="topleft", legend.names=names(ts_EZ_HICP), 
-               lty = 1, col=1:ncol(ts_EZ_HICP),text.col=1:ncol(ts_EZ_HICP), bg="white", bty=1)
+# ----------------------------
+# convert to time series object - using our vector of column names
+# time series objects are a useful way to view and manipulate data 
+# the following uses xts (extensible time series) format, but there are others 'zoo', ts. 
+xts_EZ_HICP <- xts::xts(EZ_HICPwide[,srs_chosen], order.by=as.Date(EZ_HICPwide$Date))
+
+
+plot.xts(xts_EZ_HICP, auto.legend = TRUE, main = 'Headline HICP: major EZ countries')
+
+xts::addLegend(legend.loc="topleft", legend.names=names(xts_EZ_HICP), 
+               lty = 1, col=1:ncol(xts_EZ_HICP),text.col=1:ncol(xts_EZ_HICP), bg="white", bty=1)
+
+# ----------------------------
+# another time series set of time series functions are in the 'zoo' package
+
+zoo_EZ_HICP <- zoo::zoo(x=EZ_HICPwide[,srs_chosen],order.by=as.Date(EZ_HICPwide$Date))
+plot(zoo_EZ_HICP)
+
+# ----------------------------
+# not the same output, but zoo is very useful for applying functions to time series
+# such as 'roll' series of functions which create a result from a rolling window in a time series
+
+zoo::rollmean(zoo_EZ_HICP$Germany, k=6)
 
 # ----------------------------
 # visualise a subset of the data using more modern, flexible approach (ggplot2)
@@ -183,6 +212,7 @@ EZ_HICPwide$`United Kingdom`
 # for loops are very useful, but can be slow and hard to understand/debug
 # this one is simple so it may be the right way to go
 
+#create a dataframe called numNAs
 numNAs <- data.frame("Country"=NA,"NAs"=NA)
 for(i in 1:ncol(EZ_HICPwide)){
   
@@ -198,7 +228,7 @@ numNAs2 <- data.frame(sapply(EZ_HICPwide, function(x) sum(is.na(x))))
 
 # the sapply version is a bit different in format, but the same data and easier to specify (once you are familiar with it)
 
-# in either case, there are a lot of NAs
+# there are clearly a lot of NAs
 # what to do? exclude NAs? 
 df <- tail(na.omit(EZ_HICPwide))
 
@@ -209,11 +239,51 @@ df <- tail(na.omit(EZ_HICPwide))
 # look at the difference to the earlier dataframe 
 head(EZ_HICPwide)
 EZ_HICPwide[ , sapply(EZ_HICPwide, function(x) !any(is.na(x)))]
-# this shows how is.na can seriously your data. That may be what you want, or it may not.
+# this shows how is.na can seriously affect your data. That may be what you want, or it may not.
 EZ_HICPwideNoNA <- EZ_HICPwide[ , sapply(EZ_HICPwide, function(x) !any(is.na(x)))]
 
+
+#what happens if we want to keep NAs? 
+# no problem, it will plot, of course, but there will be omissions in the series
+
+plot(EZ_HICPwide$Date, EZ_HICPwide$Germany, type = 'l', main = 'Headline HICP: major EZ countries')
+lines(EZ_HICPwide$Date, EZ_HICPwide$`United Kingdom`, col = "red")
+
+legend(
+  'topleft',
+  c("Germany", "United Kingdom"),
+  lty = c(1, 1),
+  col = c("black", "red"),
+  text.col = c("black", "red")
+)
+
+# or using xts
+
+srs_chosen <- c('Germany','United Kingdom')
+
+xts_EZ_HICP <- xts::xts(EZ_HICPwide[,srs_chosen], order.by=as.Date(EZ_HICPwide$Date))
+
+plot.xts(xts_EZ_HICP, auto.legend = TRUE, main = 'Headline HICP: major EZ countries')
+
+xts::addLegend(legend.loc="topleft", legend.names=names(xts_EZ_HICP), 
+               lty = 1, col=1:ncol(ts_EZ_HICP),text.col=1:ncol(xts_EZ_HICP), bg="white", bty=1)
+
+
+# and ggplot2
+
+selectHICP <-
+  EZ_HICPsht |>
+  filter(Country %in% srs_chosen)
+
+p_HICPyoy <- ggplot(selectHICP, aes(x = Date, y = value, colour = Country)) + 
+  geom_line() + 
+  labs(title = "HICP annual % change for selected countries",
+       y = "Percent change 12 months")
+
+p_HICPyoy
+
 # ============================
-# 4. Exploring numeric data attributes (Univariate analysis)
+# 4. Exploring numeric data attributes
 # ============================
 
 # ----------------------------
@@ -229,15 +299,18 @@ mean(EZ_HICPwideNoNA$Germany)
 median(EZ_HICPwideNoNA$Germany)
 
 mode(EZ_HICPwideNoNA$Germany)
-# oop! mode() tells what kind of structure the object is!
-# create a function getmode() 
+# oops! mode() tells what kind of structure the object is!
+# there is no inbuilt mode function in R
+# why? I don't know, but it is easy to create one. 
+# create a function Modes() which will work on more than one mode (i.e. bi-modal) data. 
 
-getmode <- function(v) {
-  uniqv <- unique(v)
-  # find the most frequent occurance using tabulate & max
-  uniqv[which.max(tabulate(match(v, uniqv)))]
+Modes <- function(x) {
+  ux <- unique(x)
+  tab <- tabulate(match(x, ux))
+  ux[tab == max(tab)]
 }
-getmode(EZ_HICPwideNoNA$Germany)
+
+Modes(EZ_HICPwideNoNA$Germany)
 
 # ----------------------------
 # 4.2 The shape of the distribution
@@ -245,10 +318,18 @@ getmode(EZ_HICPwideNoNA$Germany)
 # interquartile range (50% of data lies within this range around the mean)
 IQR(EZ_HICPwideNoNA$Germany,na.rm=TRUE)
 
-quantile(EZ_HICPwideNoNA$Germany, seq(from = 0, to = 1, by = 0.1))
+quantile(EZ_HICPwideNoNA$Germany, seq(from = 0, to = 1, by = 0.01))
+plot(quantile(EZ_HICPwideNoNA$Germany, seq(from = 0, to = 1, by = 0.01)), main = "Distribution of HICP by quantile",
+     xlab="Quantile", ylab="Germany monthly HICP since 1999")
 
 var(na.omit(EZ_HICPwideNoNA$Germany))
 sd(na.omit(EZ_HICPwideNoNA$Germany))
+
+
+# digression - 
+
+
+
 
 library(moments)
 skewness(EZ_HICPwideNoNA$Germany)
@@ -257,18 +338,24 @@ skewness(EZ_HICPwideNoNA$Germany)
 # histograms are useful
 # simple
 hist(EZ_HICPwideNoNA$Germany)
-# simple with a bit more detail
+# simple with more detail
 hist(EZ_HICPwideNoNA$Germany, breaks = seq(
   from = min(EZ_HICPwideNoNA$Germany),
   to = max(EZ_HICPwideNoNA$Germany),
-  by = 0.2
+  by = 0.1
 ))
+
+srs_chosen <- c('Germany','France','Italy','Spain')
+selectHICP <-
+  EZ_HICPsht |>
+  filter(Country %in% srs_chosen)
+
 
 # less simple, but multiple histograms on same page
 # notice we're using an earlier long dataset (selectHICP) for ggplot
-p_HICPscatter <- ggplot(data = selectHICP, aes(x = value)) + geom_histogram(binwidth = 0.5)
+p_HICPscatter <- ggplot(data = selectHICP, aes(x = value)) + geom_histogram(binwidth = 0.1)
 p_HICPscatter + facet_wrap(~Country)
-# the charts are not in the right order, let's fix that by ordering the factors of the variable 'Country'
+# the charts are in alphabetical order, not in the order we specified, let's fix that by ordering the factors of the variable 'Country'
 p_HICPscatter + facet_wrap(~factor(Country, levels=srs_chosen))
 
 # ----------------------------
@@ -329,6 +416,7 @@ ccf(diffEZ_HICPwideNoNA$Germany, diffEZ_HICPwideNoNA$Lithuania, lag.max = 5)
 ccfdata <- ccf(diffEZ_HICPwideNoNA$Germany, diffEZ_HICPwideNoNA$Lithuania)
 ccfdata <- cbind(ccfdata$lag, ccfdata$acf)
 
+View(ccfdata)
 
 # ----------------------------
 # 5.2 Visualization of relationship using scatter plot
@@ -354,6 +442,17 @@ stargazer::stargazer(fit1,type = 'text')
 # add to the plot
 abline(fit1, col = "blue")
 
+model_residuals = fit1$residuals
+hist(model_residuals)
+
+# Plot the residuals
+qqnorm(model_residuals)
+# Plot the Q-Q line
+# plotting them will give a straight line if they are normally distributed
+qqline(model_residuals)
+# obviously, there are major outliers in the relationship between Lithuanian and German HICP
+# the relationship is not normally distributed, which is not surprising, given different economy structures
+
 # ggplot2 graphics
 p_scatter <-
   ggplot(data = EZ_HICPwideNoNA, mapping = aes(x = Germany, y = Lithuania)) +
@@ -369,6 +468,7 @@ p_scatter + labs(subtitle = paste("Adj R2 = ",signif(summary(fit1)$adj.r.squared
 " P =",signif(summary(fit1)$coef[2,4], 3)))
 
 
+# what about differences? 
 plot(
   diffEZ_HICPwideNoNA$Germany,
   diffEZ_HICPwideNoNA$Lithuania,
@@ -385,6 +485,16 @@ stargazer::stargazer(fit2,type = 'text')
 
 # add to the plot
 abline(fit2, col = "blue")
+
+model_residuals2 = fit2$residuals
+hist(model_residuals2)
+
+# Plot the residuals
+qqnorm(model_residuals2)
+# Plot the Q-Q line
+# plotting them will give a straight line if they are normally distributed
+qqline(model_residuals2)
+# notice there are big difference to the previous plotting of residuals 
 
 # ggplot2 graphics
 p_scatterDiff <-
@@ -425,12 +535,13 @@ car::scatterplotMatrix(~Germany + France + Spain, ,data = diffEZ_HICPwideNoNA, m
 
 multichoiceHICP <-
   diffEZ_HICPwideNoNA[,c("Date",srs_chosen)] |>
-  pivot_longer(c(-Date), names_to = 'key', values_to = 'y')|>
-  filter(key %in% c("France","Spain","Italy"))
+  tidyr::pivot_longer(c(-Date), names_to = 'key', values_to = 'y')|>
+  dplyr::filter(key %in% c("France","Spain","Italy"))
 
-multichoiceHICP <- left_join(multichoiceHICP, diffEZ_HICPwideNoNA[,c("Date","Germany")], by = 'Date')
+multichoiceHICP <- dplyr::left_join(multichoiceHICP, diffEZ_HICPwideNoNA[,c("Date","Germany")], by = 'Date')
 
 # then it is simple
+library(ggplot2)
 ggplot(data = multichoiceHICP, aes(x = Germany, y = y, color = key, )) +
   geom_point() +
   facet_wrap(~ key, scales = "fixed")+

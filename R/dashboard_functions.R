@@ -139,9 +139,9 @@ hchartHAhist <- function(lngdata, ctitle,upperCI, citation) {
     hc_title(
       text = ctitle,
       align = "left")|>
-    hc_xAxis(title = list(text = "Months lead/lag")) |>
+    hc_xAxis(title = list(text = "Quarters lead/lag")) |>
     hc_yAxis(
-      title = list(text = "Correlation by month lead (-) or lag (+)"),
+      title = list(text = "Correlation by quarterly lead (-) or lag (+)"),
       labels = list(format = "{value:.2f}%"),
       plotLines = list(list(value = upperCI, color = "lightblue", width = 1.5,
                             dashStyle = "shortdash"),
