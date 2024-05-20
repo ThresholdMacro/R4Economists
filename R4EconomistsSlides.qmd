@@ -270,8 +270,8 @@ summary( EdAttainIncome )
 
 ## Introduction to R for Economics
 
+-   Then we'll look at Sess3_IncomeEducation.Rmd
 -   Use Rmarkdown file Sess3_LoanOfficerSurvey.Rmd
--   Then we'll look at Sess3_2IncomeEducation.Rmd
 -   Examples from Dr Nick Huntington-Klein: [https://www.youtube.com/\@NickHuntingtonKlein](https://www.youtube.com/)
 -   Linear models, fancy linear models, some tests for robust errors
 -   Time series
