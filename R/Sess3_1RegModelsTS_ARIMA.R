@@ -194,8 +194,6 @@ plot(stl(tsUSretailnonadj,s.window="period"))
 # q: the size of the moving average window, also known as the order of the moving average.
 
 
-plot(tsUSretailnonadj)
-
 plot(
   tsUSretailnonadj,
   type = 'l',
