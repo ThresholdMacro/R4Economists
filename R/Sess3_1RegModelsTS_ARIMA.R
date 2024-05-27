@@ -219,21 +219,22 @@ plot(
 tsUSretailnonadj %>% diff(lag=12) %>% diff() %>% ggtsdisplay()
 
 # significant spike at ACF 2 and 12 
-arima(tsUSretailnonadj,order=c(0,1,1),seasonal = c(0,1,1)) %>%
+# as monthly data this suggests both high seasonality and possible quarterly influence
+arima(tsUSretailnonadj,order=c(2,1,1),seasonal = c(0,1,1)) %>%
   residuals() %>% ggtsdisplay()
-arimamodel <- arima(tsUSretailnonadj,order=c(0,1,1),seasonal = c(0,1,1))
+arimamodel <- arima(tsUSretailnonadj,order=c(2,1,1),seasonal = c(0,1,2))
 summary(arimamodel)
 stargazer(arimamodel,type= 'text')
 checkresiduals(arimamodel)
 
 arimamodel %>% forecast(h=12) %>% autoplot()
 
-#Forecast five periods into the future
+
 
 tsUSretailadj %>% diff(lag=12) %>% diff() %>% ggtsdisplay()
 
 # significant spike at ACF 2 and 12 
-arima(tsUSretailadj,order=c(0,1,1),seasonal = c(0,1,1)) %>%
+arima(tsUSretailadj,order=c(2,1,1),seasonal = c(0,1,1)) %>%
   residuals() %>% ggtsdisplay()
 arimamodel <- arima(tsUSretailadj,order=c(0,1,1),seasonal = c(0,1,1))
 summary(arimamodel)
