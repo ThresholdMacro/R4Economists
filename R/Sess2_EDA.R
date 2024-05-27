@@ -266,7 +266,7 @@ xts_EZ_HICP <- xts::xts(EZ_HICPwide[,srs_chosen], order.by=as.Date(EZ_HICPwide$D
 plot.xts(xts_EZ_HICP, auto.legend = TRUE, main = 'Headline HICP: major EZ countries')
 
 xts::addLegend(legend.loc="topleft", legend.names=names(xts_EZ_HICP), 
-               lty = 1, col=1:ncol(ts_EZ_HICP),text.col=1:ncol(xts_EZ_HICP), bg="white", bty=1)
+               lty = 1, col=1:ncol(xts_EZ_HICP),text.col=1:ncol(xts_EZ_HICP), bg="white", bty=1)
 
 
 # and ggplot2
@@ -526,7 +526,7 @@ abline(fit4, col = "blue")
 pairs(~Germany + France + Spain, ,data = diffEZ_HICPwideNoNA, main = 'Regressions of HICP, major countries')
 
 # 'cars' package = Companion to Applied Regression, offers enhanced graphics for regressions
-install.packages("car")
+# install.packages("car")
 library(car)
 car::scatterplotMatrix(~Germany + France + Spain, ,data = diffEZ_HICPwideNoNA, main = 'Regressions of HICP, major countries')
 

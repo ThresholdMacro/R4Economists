@@ -3,8 +3,8 @@ title: "Sess3_LoanOfficerSurvey"
 author: "Meyrick Chapman"
 date: "`r Sys.Date()`"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
   word_document: default
 ---
 
@@ -81,7 +81,8 @@ In most cases, `knitr::kable(x)` may be enough if you only need a simple table f
 
 ```{r table1, echo=TRUE}
 reduceddata <- tail(dat_csv[,c(1:7,14)])
-knitr::kable(reduceddata, format = 'html',caption = "Recent Senior Loan Officer Survey results" )
+knitr::kable(reduceddata, format = 'latex',caption = "Recent Senior Loan Officer Survey results" ) |>
+  kableExtra::column_spec(1:8, width = "5em")
 ```
 
 ### More sophisticated options. 
@@ -94,8 +95,8 @@ DT does not have an explicit 'title' parameter, so we need to add some html tags
 <H3>Recent Senior Loan Officer Survey results</H3> 
 
 ```{r table2, echo = FALSE}
-reduceddata2 <- dat_csv[,c(1:7,14)]
-DT::datatable(reduceddata2,  caption = "A subset of recent Senior Loan Officer Survey results" )
+
+DT::datatable(reduceddata,  caption = "A subset of recent Senior Loan Officer Survey results" )
 
 ```
 
@@ -231,7 +232,7 @@ fit2 <- lm(`Higher Spreads to Large/Medium Cos`~`Fed Funds rate`,data = zDFFmort
 ```
 
 ```{r showmodel, echo = FALSE, warning = FALSE, message = FALSE, results='asis'}
-stargazer::stargazer(fit1, fit2, type = 'html')
+stargazer::stargazer(fit1, fit2, type = 'latex')
 ```
 
 ## Rmarkdown is useful 
