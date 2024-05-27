@@ -3,8 +3,8 @@ title: "Sess3_LoanOfficerSurvey"
 author: "Meyrick Chapman"
 date: "`r Sys.Date()`"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
   word_document: default
 ---
 
@@ -81,22 +81,20 @@ In most cases, `knitr::kable(x)` may be enough if you only need a simple table f
 
 ```{r table1, echo=TRUE}
 reduceddata <- tail(dat_csv[,c(1:7,14)])
-knitr::kable(reduceddata, format = 'latex',caption = "Recent Senior Loan Officer Survey results" ) |>
-  kableExtra::column_spec(1:8, width = "5em")
+knitr::kable(reduceddata, format = 'html',caption = "Recent Senior Loan Officer Survey results" ) |>
+  kableExtra::column_spec(1:8, width = "10em")
 ```
 
-### More sophisticated options. 
+<! -- More sophisticated options. 
 
 This is an implementation of DT::datatable. DT only supports the HTML format but is very customisable. It is built on top of the JavaScript library **DataTables**, which can turn a static table into an interactive table on an HTML page. You may sort, search, and paginate the table. **DT** also supports formatting the cells, works with Shiny to build interactive applications, and has included a large number of **DataTables** extensions (e.g., you may export the table to Excel, or interactively reorder columns). See the package repository for more information: <https://github.com/rstudio/DT>.
 
 
-DT does not have an explicit 'title' parameter, so we need to add some html tags above the chart
-
-<H3>Recent Senior Loan Officer Survey results</H3> 
+DT does not have an explicit 'title' parameter, so we need to add some html tags above the chart -->
 
 ```{r table2, echo = FALSE}
 
-DT::datatable(reduceddata,  caption = "A subset of recent Senior Loan Officer Survey results" )
+#DT::datatable(reduceddata,  caption = "A subset of recent Senior Loan Officer Survey results" )
 
 ```
 
@@ -232,10 +230,9 @@ fit2 <- lm(`Higher Spreads to Large/Medium Cos`~`Fed Funds rate`,data = zDFFmort
 ```
 
 ```{r showmodel, echo = FALSE, warning = FALSE, message = FALSE, results='asis'}
-stargazer::stargazer(fit1, fit2, type = 'latex')
+stargazer::stargazer(fit1, fit2, type = 'html')
 ```
 
-## Rmarkdown is useful 
+## Rmarkdown is a flexible way to incorporate text and code. 
 I hope this demonstration shows some of the useful features of Rmarkdown, incorporating R into usable html, pdf, Word output. 
 
-End of report

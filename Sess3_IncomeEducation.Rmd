@@ -7,7 +7,7 @@ output:
 
 ## Download Income by Educational Attainment from FRED and create a set of charts
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
+A simple exploration of the relationship between Educational Attainment and Income in the USA, using data from FRED.
 
 ```{r include=FALSE}
 ## load up the packages we will need:  (uncomment as required)
@@ -113,11 +113,14 @@ summary(fit1)
 
 
 ```
+
 Prettify the results
 
 ```{r}
+
 out <- stargazer::stargazer(fit1, type = 'text')
 ```
+
 ### Create a plot of of the model results.
 
 Map the coefficients of income of low educational standard against bachelor's degree income.
@@ -154,4 +157,3 @@ p_EdAttainLM + labs(
 )
 
 ```
-
