@@ -56,6 +56,9 @@ model2 <- lm(wage~educ+I(educ^2)+tenure+female+married,data=wage1)
 stargazer(model2,type='text')
 
 #Variables and their interactions
+#interaction terms enable you to examine whether the relationship 
+#between the target and the independent variable changes 
+#ßdepending on the value of another independent variable.
 # y = alpha + beta1*educ + beta2*female + beta3*educ*female
 model3 <- lm(wage~educ*female,data=wage1)
 stargazer(model3,type='text')
@@ -75,9 +78,6 @@ sort(unique(wage1$educ))
 
 #Regression model with lots of control variables
 regdata <- subset(wage1,select=c("wage","educ","exper","tenure","nonwhite","female","married","numdep"))
-model7 <- lm(wage~.,data=regdata)
-stargazer(model7,type='text')
-regdata <- wage1[,1:8]
 model7 <- lm(wage~.,data=regdata)
 stargazer(model7,type='text')
 #With an interaction
@@ -110,9 +110,6 @@ stargazer::stargazer(model3,RobSE,ClustSE,type='text')
 # and between computer languages. Results may therefore be dependent on assumptions not visible to the user
 # See: https://stackoverflow.com/questions/65435476/why-panelols-in-python-has-different-result-than-plm-in-r
 
-
-#Breusch-Pagan test for Heteroskedasticity 
-lmtest::bptest(model3)
 
 #F test of significance
 #Test if the coefficient on educ is 0 
@@ -170,28 +167,79 @@ stargazer::stargazer(tsreg,type='text')
 tsreg2 <- dynlm(industry~L(industry,1:3))
 stargazer::stargazer(tsreg2,type='text')
 
-#Tell R the seasonality of our time series
-industry <- ts(industry,frequency=12)
-seasons <- stl(industry,s.window="period")
+# decompose a timeseries into trend, seasonal, error terms
+USretailadj <- alfred::get_fred_series(series_id = 'RSXFS', series_name = 'Retail Adj')
+USretailadj$date <- as.Date(USretailadj$date)
+USretailnonadj <- alfred::get_fred_series(series_id = 'RSXFSN', series_name = 'Retail Nonadj')
+USretailnonadj$date <- as.Date(USretailnonadj$date)
+tsUSretailnonadj <- ts(USretailnonadj$`Retail Nonadj`, frequency = 12, start = c(1992,1))
+tsUSretailadj <- ts(USretailadj$`Retail Adj`, frequency = 12, start = c(1992,1))
 
-#Plot out a seasonality plot for industry by year
-forecast::seasonplot(industry)
+
+USRetailtimeseriescomponents <- decompose(tsUSretailnonadj)
+plot(USRetailtimeseriescomponents)
+
+plot(stl(tsUSretailnonadj,s.window="period"))
+
 
 # ---------------------------------------
 # ARIMA models
 
-#Bring in China data and get a time series from it
-data(ChinaIncome)
-transport <- ChinaIncome[,5]
+# An autoregressive integrated moving average, or ARIMA, 
+# is a statistical analysis model that uses time series data
+# to either better understand the data set or to predict future trends. 
+# parameters
+# p: the number of lag observations in the model, also known as the lag order.
+# d: the number of times the raw observations are differenced; also known as the degree of differencing.
+# q: the size of the moving average window, also known as the order of the moving average.
 
-plot(transport)
 
-#Run an ARIMA
-arimamodel <- arima(transport,order=c(1,1,1))
+plot(tsUSretailnonadj)
+
+plot(
+  tsUSretailnonadj,
+  type = 'l',
+  main = "US Retail Sales - non-adjusted",
+  ylab=("Retail index"),
+xlab=("Year"))
+
+lines(
+  tsUSretailadj,
+  col='red')
+
+plot(
+  tsUSretailadj,
+  type = 'l',
+  main = "US Retail Sales - adjusted",
+  ylab=("Retail index"),
+  xlab=("Year"))
+
+# find the appropriate seasonal difference
+
+tsUSretailnonadj %>% diff(lag=12) %>% diff() %>% ggtsdisplay()
+
+# significant spike at ACF 2 and 12 
+arima(tsUSretailnonadj,order=c(0,1,1),seasonal = c(0,1,1)) %>%
+  residuals() %>% ggtsdisplay()
+arimamodel <- arima(tsUSretailnonadj,order=c(0,1,1),seasonal = c(0,1,1))
 summary(arimamodel)
 stargazer(arimamodel,type= 'text')
+checkresiduals(arimamodel)
+
+arimamodel %>% forecast(h=12) %>% autoplot()
 
 #Forecast five periods into the future
-forecast(arimamodel,5)
-#plot that forecast
-plot(forecast(arimamodel,5))
+
+tsUSretailadj %>% diff(lag=12) %>% diff() %>% ggtsdisplay()
+
+# significant spike at ACF 2 and 12 
+arima(tsUSretailadj,order=c(0,1,1),seasonal = c(0,1,1)) %>%
+  residuals() %>% ggtsdisplay()
+arimamodel <- arima(tsUSretailadj,order=c(0,1,1),seasonal = c(0,1,1))
+summary(arimamodel)
+stargazer(arimamodel,type= 'text')
+checkresiduals(diff(tsUSretailadj))
+arimamodel %>% forecast(h=12) %>% autoplot()
+
+tseries::adf.test(diff(tsUSretailadj,lag = 12))
+plot(diff(tsUSretailadj))
