@@ -214,31 +214,31 @@ plot(
 
 # find the appropriate seasonal difference
 
-tsUSretailnonadj %>% diff(lag=12) %>% diff() %>% ggtsdisplay()
+tsUSretailnonadj |> diff(lag=12) |> diff() |> ggtsdisplay()
 
 # significant spike at ACF 2 and 12 
 # as monthly data this suggests both high seasonality and possible quarterly influence
-arima(tsUSretailnonadj,order=c(2,1,1),seasonal = c(0,1,1)) %>%
-  residuals() %>% ggtsdisplay()
+arima(tsUSretailnonadj,order=c(2,1,1),seasonal = c(0,1,1)) |>
+  residuals() |> ggtsdisplay()
 arimamodel <- arima(tsUSretailnonadj,order=c(2,1,1),seasonal = c(0,1,2))
 summary(arimamodel)
 stargazer(arimamodel,type= 'text')
 checkresiduals(arimamodel)
 
-arimamodel %>% forecast(h=12) %>% autoplot()
+arimamodel |> forecast(h=12) |> autoplot()
 
 
 
-tsUSretailadj %>% diff(lag=12) %>% diff() %>% ggtsdisplay()
+tsUSretailadj |> diff(lag=12) |> diff() |> ggtsdisplay()
 
 # significant spike at ACF 2 and 12 
-arima(tsUSretailadj,order=c(2,1,1),seasonal = c(0,1,1)) %>%
-  residuals() %>% ggtsdisplay()
+arima(tsUSretailadj,order=c(2,1,1),seasonal = c(0,1,1)) |>
+  residuals() |> ggtsdisplay()
 arimamodel <- arima(tsUSretailadj,order=c(0,1,1),seasonal = c(0,1,1))
 summary(arimamodel)
 stargazer(arimamodel,type= 'text')
 checkresiduals(diff(tsUSretailadj))
-arimamodel %>% forecast(h=12) %>% autoplot()
+arimamodel |> forecast(h=12) |> autoplot()
 
 tseries::adf.test(diff(tsUSretailadj,lag = 12))
 plot(diff(tsUSretailadj))
