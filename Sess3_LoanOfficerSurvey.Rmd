@@ -57,7 +57,9 @@ source("R/ggstdplots.R")
 
 ## Report on Senior Loan Officers Survey from Federal Reserve
 
-Survey of up to eighty large domestic banks and twenty-four U.S. branches and agencies of foreign banks. The Federal Reserve generally conducts the survey quarterly, timing it so that results are available for the January/February, April/May, August, and October/November meetings of the Federal Open Market Committee. The Federal Reserve occasionally conducts one or two additional surveys during the year. Questions cover changes in the standards and terms of the banks' lending and the state of business and household demand for loans. The survey often includes questions on one or two other topics of current interest.
+Survey of up to eighty large domestic banks and twenty-four U.S. branches and agencies of foreign banks. The Federal Reserve generally conducts the survey quarterly, with results available for the January/February, April/May, August, and October/November meetings of the Federal Open Market Committee.
+
+Questions cover changes in the standards and terms of the banks' lending and the state of business and household demand for loans. The survey often includes questions on one or two other topics of current interest.
 
 (taken from Fed website: \<<https://www.federalreserve.gov/data/sloos.htm>)
 
@@ -81,29 +83,19 @@ In most cases, `knitr::kable(x)` may be enough if you only need a simple table f
 
 ```{r table1, echo=TRUE}
 reduceddata <- tail(dat_csv[,c(1:7,14)])
+knitr::kable(reduceddata)
+```
+
+Table formatting can become more complex, with additional parameters to kable, or the use of kableExtra package.
+
+```{r}
 knitr::kable(reduceddata, format = 'html',caption = "Recent Senior Loan Officer Survey results" ) |>
   kableExtra::column_spec(1:8, width = "10em")
 ```
 
-<! -- More sophisticated options. 
-
-This is an implementation of DT::datatable. DT only supports the HTML format but is very customisable. It is built on top of the JavaScript library **DataTables**, which can turn a static table into an interactive table on an HTML page. You may sort, search, and paginate the table. **DT** also supports formatting the cells, works with Shiny to build interactive applications, and has included a large number of **DataTables** extensions (e.g., you may export the table to Excel, or interactively reorder columns). See the package repository for more information: <https://github.com/rstudio/DT>.
-
-
-DT does not have an explicit 'title' parameter, so we need to add some html tags above the chart -->
-
-```{r table2, echo = FALSE}
-
-#DT::datatable(reduceddata,  caption = "A subset of recent Senior Loan Officer Survey results" )
-
-```
-
 ## Commentary
 
-Maybe we'd like to comment on the recent evolution of mortgages Some comment would go here: 
-
 As interest rates have increased, lenders have been assessing whether prospective borrowers can afford to repay their mortgages at higher interest rates. In turn, mortgagors have been adjusting the amount they borrow relative to their income and extending their mortgage terms. However, recently this behaviour has changed.
-
 
 ```{r chart1, include=FALSE}
 p_loandemand <-
@@ -157,9 +149,7 @@ dat_csv[,c(1:3)] |>
 
 ```
 
-## More commentary & charts 
-
-Then maybe some more comment on the distribution of responses over time, and where most recent responses are.
+## More commentary & charts
 
 Progress toward normalization in lending practices generally halted in the first quarter as the Federal Reserve turned more hawkish amid the rebound in inflation, according to data in a Fed report released on Monday.
 
@@ -200,27 +190,31 @@ Mortgage lenders set interest rates based on their expectations for future infla
 p_MortFedFunds
 ```
 
-## Display calculation results 
+## Display calculation results
+
 ### Using html tags
 
-Take a look at the source code to see how html tags are inserted directly into the text in this section. The **stargazer** is in bold using markdown's built-in markup code. These can be mixed which is useful. Basic formatting is generally available, but if something special is needed, html tags (or CSS formatting) can add more sophisticated formats.  
+Take a look at the source code to see how html tags are inserted directly into the text in this section. The **stargazer** is in bold using markdown's built-in markup code. These can be mixed which is useful. Basic formatting is generally available, but if something special is needed, html tags (or CSS formatting) can add more sophisticated formats.
 
 Perhaps you would like to show a linear model between Fed Funds and mortgage demand.
 
 The **`stargazer`** command produces LaTeX code for well-formatted tables that hold regression analysis results from several models side-by-side, as well as summary statistics.
 
-Here stargazer shows 2 model results: 
+Here stargazer shows 2 model results:
+
 <ol>
-  <li> mortgage demand as reported by SLOS vs. Fed Funds</li>
-  <li>reports of higher spreads on loans to Large/Medium companies vs. Fed Funds rate</li>
+
+<li>mortgage demand as reported by SLOS vs. Fed Funds</li>
+
+<li>reports of higher spreads on loans to Large/Medium companies vs. Fed Funds rate</li>
+
 </ol>
-Neither has a high R<sup>2</sup> rate. 
 
-The ordered list items and the superscript 2 in R<sup>2</sup> use html tags. 
+Neither has a high R<sup>2</sup> rate.
 
+The ordered list items and the superscript 2 in R<sup>2</sup> use html tags.
 
 If the output is to pdf, the format will need to be changed in stargazer
-
 
 ```{r lm1, echo=FALSE}
 
@@ -233,6 +227,6 @@ fit2 <- lm(`Higher Spreads to Large/Medium Cos`~`Fed Funds rate`,data = zDFFmort
 stargazer::stargazer(fit1, fit2, type = 'html')
 ```
 
-## Rmarkdown is a flexible way to incorporate text and code. 
-I hope this demonstration shows some of the useful features of Rmarkdown, incorporating R into usable html, pdf, Word output. 
+## Rmarkdown is a flexible way to incorporate text and code.
 
+I hope this demonstration shows some of the useful features of Rmarkdown, incorporating R into usable html, pdf, Word output.

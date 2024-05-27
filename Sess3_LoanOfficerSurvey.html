@@ -585,13 +585,12 @@ display: none;
 <h2>Report on Senior Loan Officers Survey from Federal Reserve</h2>
 <p>Survey of up to eighty large domestic banks and twenty-four U.S.
 branches and agencies of foreign banks. The Federal Reserve generally
-conducts the survey quarterly, timing it so that results are available
-for the January/February, April/May, August, and October/November
-meetings of the Federal Open Market Committee. The Federal Reserve
-occasionally conducts one or two additional surveys during the year.
-Questions cover changes in the standards and terms of the banks’ lending
-and the state of business and household demand for loans. The survey
-often includes questions on one or two other topics of current
+conducts the survey quarterly, with results available for the
+January/February, April/May, August, and October/November meetings of
+the Federal Open Market Committee.</p>
+<p>Questions cover changes in the standards and terms of the banks’
+lending and the state of business and household demand for loans. The
+survey often includes questions on one or two other topics of current
 interest.</p>
 <p>(taken from Fed website: &lt;<a href="https://www.federalreserve.gov/data/sloos.htm" class="uri">https://www.federalreserve.gov/data/sloos.htm</a>)</p>
 <div id="a-glimpse-at-the-data." class="section level3">
@@ -610,7 +609,96 @@ tables), <code>html</code> (HTML tables), and <code>rst</code>
 <code>kable()</code> uses the <code>pipe</code> format for tables by
 default, which looks like this:</p>
 <pre class="r"><code>reduceddata &lt;- tail(dat_csv[,c(1:7,14)])
-knitr::kable(reduceddata, format = &#39;html&#39;,caption = &quot;Recent Senior Loan Officer Survey results&quot; ) |&gt;
+knitr::kable(reduceddata)</code></pre>
+<table style="width:100%;">
+<colgroup>
+<col width="5%" />
+<col width="17%" />
+<col width="14%" />
+<col width="17%" />
+<col width="13%" />
+<col width="15%" />
+<col width="11%" />
+<col width="5%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Date</th>
+<th align="right">Higher Spreads to Large/Medium Cos</th>
+<th align="right">Higher Spreads to Small Cos</th>
+<th align="right">Tighter Conds to Large/Medium Cos</th>
+<th align="right">Tighter Conds to Small Cos</th>
+<th align="right">Loan Demand: Large/Medium Cos</th>
+<th align="right">Loan Demand: Small Cos</th>
+<th align="right">Mortgages</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2023-01-01</td>
+<td align="right">44.8</td>
+<td align="right">32.8</td>
+<td align="right">44.8</td>
+<td align="right">43.8</td>
+<td align="right">-31.3</td>
+<td align="right">-42.2</td>
+<td align="right">-93.0</td>
+</tr>
+<tr class="even">
+<td align="left">2023-04-01</td>
+<td align="right">62.3</td>
+<td align="right">58.3</td>
+<td align="right">46.0</td>
+<td align="right">46.7</td>
+<td align="right">-55.6</td>
+<td align="right">-53.3</td>
+<td align="right">-52.7</td>
+</tr>
+<tr class="odd">
+<td align="left">2023-07-01</td>
+<td align="right">68.3</td>
+<td align="right">66.1</td>
+<td align="right">50.8</td>
+<td align="right">49.2</td>
+<td align="right">-51.6</td>
+<td align="right">-47.5</td>
+<td align="right">-27.3</td>
+</tr>
+<tr class="even">
+<td align="left">2023-10-01</td>
+<td align="right">50.0</td>
+<td align="right">44.6</td>
+<td align="right">33.9</td>
+<td align="right">30.4</td>
+<td align="right">-30.5</td>
+<td align="right">-49.1</td>
+<td align="right">-53.1</td>
+</tr>
+<tr class="odd">
+<td align="left">2024-01-01</td>
+<td align="right">30.6</td>
+<td align="right">34.5</td>
+<td align="right">14.5</td>
+<td align="right">18.6</td>
+<td align="right">-25.0</td>
+<td align="right">-22.4</td>
+<td align="right">-50.9</td>
+</tr>
+<tr class="even">
+<td align="left">2024-04-01</td>
+<td align="right">14.3</td>
+<td align="right">20.0</td>
+<td align="right">15.6</td>
+<td align="right">19.7</td>
+<td align="right">-26.6</td>
+<td align="right">-23.0</td>
+<td align="right">-8.8</td>
+</tr>
+</tbody>
+</table>
+<p>Table formatting can become more complex, with additional parameters
+to kable, or the use of kableExtra package.</p>
+<pre class="r"><code>knitr::kable(reduceddata, format = &#39;html&#39;,caption = &quot;Recent Senior Loan Officer Survey results&quot; ) |&gt;
   kableExtra::column_spec(1:8, width = &quot;10em&quot;)</code></pre>
 <table>
 <caption>
@@ -803,24 +891,10 @@ Mortgages
 </tr>
 </tbody>
 </table>
-<p>&lt;! – More sophisticated options.</p>
-<p>This is an implementation of DT::datatable. DT only supports the HTML
-format but is very customisable. It is built on top of the JavaScript
-library <strong>DataTables</strong>, which can turn a static table into
-an interactive table on an HTML page. You may sort, search, and paginate
-the table. <strong>DT</strong> also supports formatting the cells, works
-with Shiny to build interactive applications, and has included a large
-number of <strong>DataTables</strong> extensions (e.g., you may export
-the table to Excel, or interactively reorder columns). See the package
-repository for more information: <a href="https://github.com/rstudio/DT" class="uri">https://github.com/rstudio/DT</a>.</p>
-<p>DT does not have an explicit ‘title’ parameter, so we need to add
-some html tags above the chart –&gt;</p>
 </div>
 </div>
 <div id="commentary" class="section level2">
 <h2>Commentary</h2>
-<p>Maybe we’d like to comment on the recent evolution of mortgages Some
-comment would go here:</p>
 <p>As interest rates have increased, lenders have been assessing whether
 prospective borrowers can afford to repay their mortgages at higher
 interest rates. In turn, mortgagors have been adjusting the amount they
@@ -836,8 +910,6 @@ make some further comments.</p>
 </div>
 <div id="more-commentary-charts" class="section level2">
 <h2>More commentary &amp; charts</h2>
-<p>Then maybe some more comment on the distribution of responses over
-time, and where most recent responses are.</p>
 <p>Progress toward normalization in lending practices generally halted
 in the first quarter as the Federal Reserve turned more hawkish amid the
 rebound in inflation, according to data in a Fed report released on
@@ -881,7 +953,7 @@ mortgage demand.</p>
 <p>The <strong><code>stargazer</code></strong> command produces LaTeX
 code for well-formatted tables that hold regression analysis results
 from several models side-by-side, as well as summary statistics.</p>
-Here stargazer shows 2 model results:
+<p>Here stargazer shows 2 model results:</p>
 <ol>
 <li>
 mortgage demand as reported by SLOS vs. Fed Funds
