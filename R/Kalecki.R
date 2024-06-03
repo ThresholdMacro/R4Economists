@@ -36,7 +36,6 @@ fredr)
 ## ---------------------------
 
 ## load up our functions into memory
-#source("~/Library/Mobile Documents/com~apple~CloudDocs/Meyrick/R/Libs/HAgraphics/R/ggstdplots.R")
 
 API_key<-'39889bdd8fa77d15b0ae08ab03f7020c'
 fredr::fredr_set_key(API_key)
