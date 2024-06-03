@@ -62,7 +62,7 @@ selectizeInput(
 
 )
 
-corrtxt <- htmltools::HTML("Correlations: months lead(-)/lag(+)<br>Choose 2 series to calc correlations<br>")
+corrtxt <- htmltools::HTML("Correlations: quarters lead(-)/lag(+)<br>Choose 2 series to calc correlations<br>")
 
 selectizeInput(
     inputId = "cor",
